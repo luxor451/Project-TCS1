@@ -1,5 +1,11 @@
 This is the project for the lab sessions of the TCS1-IN Algorithms &
-Programming course. The project is updated before each lab session.
+Programming course. The project is updated before each lab
+session.
+
+Solutions for selected exercises of session `MXX` will be given in the
+corresponding `MXX-sol` directory. You should read the
+`MXX-sol/comments.md` file explaining solutions (view it directly
+through https://gitlab.isae-supaero.fr).
 
 * name:
 * first name:
