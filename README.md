@@ -1,5 +1,5 @@
 This is the project for the lab sessions of the TCS1-IN Algorithms &
-Programming course. The project is updated before each lab
+Programming course (Rust track). The project is updated before each lab
 session.
 
 Solutions for selected exercises of session `MXX` will be given in the
