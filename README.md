@@ -14,14 +14,14 @@ through https://gitlab.isae-supaero.fr).
 Here is the content of the lab sessions:
 
 * M0: introduction and command line interface
-* M1: from Python to C - programs manipulating scalar values
-* M2: from Python to C - programs manipulating structures
-* M3: from Python to C - programs manipulating arrays
-* M4: compilation and Makefiles
-* M5: pointers
-* M6: pointers and arrays
-* M7: dynamic allocation
-* M8: debugging
+* M1: from C to Rust - programs manipulating scalar values
+* M2: from C to Rust - programs manipulating structures
+* M3: compilation and Makefiles
+* M4: pointers, references and ownership
+* M5: from C to Rust - programs manipulating arrays
+* M6: dynamic allocation in C
+* M7: dynamic allocation in Rust
+* M8: iterators
 * M9: linked lists
 * M10: binary search trees
-* M11: AVL trees
+* M11: surprise
