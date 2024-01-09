@@ -7,9 +7,9 @@ corresponding `MXX-sol` directory. You should read the
 `MXX-sol/comments.md` file explaining solutions (view it directly
 through https://gitlab.isae-supaero.fr).
 
-* name:
-* first name:
-* group:
+* name: Doche
+* first name: Dimitry
+* group: MPI
 
 Here is the content of the lab sessions:
 
