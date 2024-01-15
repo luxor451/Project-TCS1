@@ -1,4 +1,4 @@
-fn inc(i: i32) {
+fn incr(i: i32) -> i32{
     return i + 1;
 }
 
@@ -6,7 +6,7 @@ fn pretty_print(i: i32) {
     println!("Here is {}", i);
 }
 
-fn add(i: i32, j: i32) {
+fn add(i: f64, j: f64) {
     println!("{}", i + j);
 }
 
@@ -18,7 +18,7 @@ fn main() {
 
     println!("inc({}) = {}", i, incr(i));
 
-    pretty_print("Now, an addition!");
+    println!("Now, an addition!");
 
-    add(i, j);
+    add(i as f64, j);
 }

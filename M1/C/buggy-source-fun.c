@@ -1,19 +1,19 @@
 #include <stdio.h>
 
 int inc(int i);
-pretty_print(int i);
-void add(int i, int j);
+void pretty_print(int i);
+int add(int i, int j);
 
 int inc(int i) {
     return i + 1;
 }
 
-pretty_print(int i) {
+void pretty_print(int i) {
     printf("Here is %d\n", i);
 }
 
-void add(int i, int j) {
-    printf("%d\n", i + j);
+int add(int i, int j) {
+    return i + j;
 }
 
 int main(void) {
@@ -23,11 +23,12 @@ int main(void) {
 
     pretty_print(i);
 
-    printf("inc(%d) = %d\n", i, incr(i));
+    printf("inc(%d) = %d\n", i, inc(i));
 
-    pretty_print("Now, an addition!");
+    printf("Now, an addition!\n");
 
     z = add(i, j);
+    pretty_print(z);
 
     return 0;
 }
