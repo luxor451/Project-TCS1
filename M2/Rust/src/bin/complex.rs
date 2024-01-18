@@ -1,36 +1,41 @@
 pub struct Complex {
-    // complete this definition
+    real : f64,
+    imaginary : f64,
 }
+
 
 impl Complex {
     // implement (at least) these associated functions
 
     fn new(r: f64, i: f64) -> Self {
-        panic!("not yet implemented !")
+        return Complex { real: r, imaginary: i }
     }
     fn add(&self, other: &Self) -> Self {
-       panic!("not yet implemented !")
+        return Complex { real: self.real + other.real, imaginary: self.imaginary + other.imaginary }
     }
     fn sub(&self, other: &Self) -> Self {
-        panic!("not yet implemented !")
+        return Complex { real: self.real - other.real, imaginary: self.imaginary - other.imaginary }
     }
     fn mult(&self, other: &Self) -> Self {
-       panic!("not yet implemented !")
+        let a : f64 = (self.real * other.real) - (self.imaginary * other.imaginary);
+        let b : f64 = (self.real * other.imaginary) + (self.imaginary * other.real);
+        return Complex { real: a, imaginary: b }
     }
     // multiplication by a scalar
     fn scal(&self, scal: f64) -> Self {
-        panic!("not yet implemented !")
+        return Complex { real: scal * self.real , imaginary: scal * self.imaginary }
     }
     fn module(&self) -> f64 {
-        panic!("not yet implemented !")
+       return f64::sqrt((self.real * self.real) + (self.imaginary * self.imaginary))
     }
     fn argument(&self) -> f64 {
-        panic!("not yet implemented !")
+        return f64::atan2(self.imaginary , self.real)
     }
 }
 
 pub struct Rectangle {
-    // complete this definition
+    top_left_corner : Complex,
+    bottom_right_corner : Complex,
 }
 
 impl Rectangle {
@@ -38,23 +43,45 @@ impl Rectangle {
 
     // the width of the self rectangle
     fn width(&self) -> f64 {
-        panic!("not yet implemented !")
+        return (self.bottom_right_corner.real - self.top_left_corner.real).abs();
     }
     // the height of the self rectangle
     fn height(&self) -> f64 {
-        panic!("not yet implemented !")
+        return (self.bottom_right_corner.imaginary - self.top_left_corner.imaginary).abs();
     }
     // pick up some complex point inside the self rectangle
     fn pick(&self) -> Complex {
-        panic!("not yet implemented !")
+        return Complex {real : self.top_left_corner.real , imaginary : self.top_left_corner.imaginary};
     }
     // split the self rectangle along its largest dimension
     // iff it is larger than eps, the required precision
     fn split(&self, eps: f64) -> Option<(Self, Self)> {
-        panic!("not yet implemented !")
+        if self.width() < eps && self.height()< eps {
+            return None;
+        } else if self.width() < self.height() {
+            let rec_1:Rectangle = Rectangle { 
+                top_left_corner: Complex { real: self.top_left_corner.real, imaginary: self.top_left_corner.imaginary },
+                bottom_right_corner: Complex { real: self.bottom_right_corner.real, imaginary: self.bottom_right_corner.imaginary + self.height()/2. } ,
+            };
+            let rec_2:Rectangle = Rectangle { 
+                top_left_corner: Complex { real: self.top_left_corner.real, imaginary: self.top_left_corner.imaginary - self.height()/2. },
+                bottom_right_corner:  Complex { real: self.bottom_right_corner.real, imaginary: self.bottom_right_corner.imaginary },
+            };
+            return Some((rec_1, rec_2));
+        } else {
+            let rec_1:Rectangle = Rectangle { 
+                top_left_corner: Complex { real: self.top_left_corner.real, imaginary: self.top_left_corner.imaginary },
+                bottom_right_corner: Complex { real: self.bottom_right_corner.real - self.width()/2., imaginary: self.bottom_right_corner.imaginary } ,
+            };
+            let rec_2:Rectangle = Rectangle { 
+                top_left_corner: Complex { real: self.top_left_corner.real + self.width()/2., imaginary: self.top_left_corner.imaginary },
+                bottom_right_corner:  Complex { real: self.bottom_right_corner.real, imaginary: self.bottom_right_corner.imaginary },
+            };
+            return Some((rec_1, rec_2));
+        }
+
     }
 }
-
 // my_poly(z) == (z^3 - 1)
 fn my_poly(z: &Complex) -> Complex {
     let r = &Complex::new(1., 0.);
@@ -82,8 +109,15 @@ fn zero_crossings_line(z1: &Complex, z2: &Complex, h: f64) -> i64 {
         let zc2 = z2.scal(c2 / n);
 	// z is the ith point along z1--z2
         let z = zc1.add(&zc2);
-	// complete the loop body !!
-	panic!("not yet implemented !")
+    // complete the loop body !!
+        if !((arg - my_poly(&z).argument()) < 3.){
+            arg  = my_poly(&z).argument();
+            let current_sign: bool = arg > 0.;
+            if !(current_sign && pos) {
+                zeroes += 1;
+            }
+            pos = current_sign;
+        }
     }
     return zeroes;
 }
