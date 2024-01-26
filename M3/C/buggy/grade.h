@@ -9,6 +9,10 @@
 /**
  * @brief a structure to represent grade
  */
+
+#ifndef GRADE_H
+#define GRADE_H
+#include <stdbool.h>
 struct grade {
     /** the name of the student */
     char * name;
@@ -34,3 +38,5 @@ void print_grade(struct grade the_grade);
  *
  */
 bool is_valid(struct grade the_grade);
+
+#endif

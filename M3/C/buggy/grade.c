@@ -10,7 +10,7 @@
 
 #include "grade.h"
 
-void print_grades(struct grade the_grade) {
+void print_grade(struct grade the_grade) {
     printf("Student %s has obtained the grade %.1f for course %s\n",
            the_grade.name, the_grade.grade, the_grade.course);
 }
