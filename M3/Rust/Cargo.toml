@@ -1,1 +1,12 @@
-../../../../tex-src/basics-compilation/rust-src/Cargo.toml
+[package]
+name = "isae_algebra"
+version = "0.1.0"
+edition = "2018"
+
+[lib]
+name = "isae_algebra"
+path = "src/lib.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
