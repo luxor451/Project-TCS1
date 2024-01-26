@@ -1,3 +1,6 @@
+use isae_algebra::*;
+
+
 fn main() -> () {
     let eqn_real = QuadraticEquation {
         a: 2.0,

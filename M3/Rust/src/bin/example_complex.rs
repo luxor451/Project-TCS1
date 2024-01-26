@@ -1,4 +1,6 @@
 use core::f64::consts::PI;
+use isae_algebra::*;
+
 
 fn main() -> () {
     let cc1 = Complex::Car {

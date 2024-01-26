@@ -1,32 +1,32 @@
 use core::f64::consts::PI;
 
-enum Complex {
+pub enum Complex {
     Car { real: f64, imag: f64 },
     Pol { modu: f64, argu: f64 },
 }
 
-fn real(x: &Complex) -> f64 {
+pub fn real(x: &Complex) -> f64 {
     match x {
         Complex::Car { real, .. } => *real,
         Complex::Pol { modu, argu } => modu * f64::cos(*argu),
     }
 }
 
-fn imag(x: &Complex) -> f64 {
+pub fn imag(x: &Complex) -> f64 {
     match x {
         Complex::Car { real: _, imag } => *imag,
         Complex::Pol { modu, argu } => modu * f64::sin(*argu),
     }
 }
 
-fn modu(x: &Complex) -> f64 {
+pub fn modu(x: &Complex) -> f64 {
     match x {
         Complex::Car { real, imag } => f64::sqrt(f64::powf(*real, 2.0) + f64::powf(*imag, 2.0)),
         Complex::Pol { modu, .. } => *modu,
     }
 }
 
-fn argu(x: &Complex) -> Option<f64> {
+pub fn argu(x: &Complex) -> Option<f64> {
     match x {
         Complex::Car { real, imag } => {
             if *real == 0.0 && *imag == 0.0 {
@@ -39,7 +39,7 @@ fn argu(x: &Complex) -> Option<f64> {
     }
 }
 
-fn conjugate(x: &Complex) -> Complex {
+pub fn conjugate(x: &Complex) -> Complex {
     match x {
         Complex::Car { real, imag } => Complex::Car {
             real: *real,
@@ -52,7 +52,7 @@ fn conjugate(x: &Complex) -> Complex {
     }
 }
 
-fn mult(x: &Complex, y: &Complex) -> Complex {
+pub fn mult(x: &Complex, y: &Complex) -> Complex {
     match (x, y) {
         (
             Complex::Car {
@@ -91,23 +91,23 @@ fn mult(x: &Complex, y: &Complex) -> Complex {
     }
 }
 
-fn sqr_norm(x: &Complex) -> f64 {
+pub fn sqr_norm(x: &Complex) -> f64 {
     real(&mult(&x, &conjugate(&x)))
 }
 
-struct QuadraticEquation {
-    a: f64,
-    b: f64,
-    c: f64,
+pub struct QuadraticEquation {
+    pub a: f64,
+    pub b: f64,
+    pub c: f64,
 }
 
-enum QuadraticEquationSolution {
+pub enum QuadraticEquationSolution {
     DoubleRealSolutions { sol_1: f64, sol_2: f64 },
     OneRealSolution { sol: f64 },
     ComplexSolutions { sol_1: Complex, sol_2: Complex },
 }
 
-fn solve_quadratic_equation(eq: &QuadraticEquation) -> QuadraticEquationSolution {
+pub fn solve_quadratic_equation(eq: &QuadraticEquation) -> QuadraticEquationSolution {
     let delta = eq.b * eq.b - 4.0 * eq.a * eq.c;
     let den = 2.0 * eq.a;
     if delta > 0.0 {
@@ -136,7 +136,7 @@ fn solve_quadratic_equation(eq: &QuadraticEquation) -> QuadraticEquationSolution
     }
 }
 
-fn print_solutions_quadratic_equation(eq: &QuadraticEquation) {
+pub fn print_solutions_quadratic_equation(eq: &QuadraticEquation) {
     match solve_quadratic_equation(&eq) {
         QuadraticEquationSolution::DoubleRealSolutions { sol_1, sol_2 } => {
             println!(
@@ -164,7 +164,7 @@ fn print_solutions_quadratic_equation(eq: &QuadraticEquation) {
 }
 
 #[cfg(test)]
-mod tests {
+pub mod tests {
     use core::f64::consts::PI;
 
     #[test]
