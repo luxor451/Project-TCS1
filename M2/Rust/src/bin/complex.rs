@@ -1,3 +1,6 @@
+use core::f64;
+/* use std::simd::MaskElement;
+ */
 pub struct Complex {
     real : f64,
     imaginary : f64,
@@ -33,7 +36,7 @@ impl Complex {
     }
 }
 
-pub struct Rectangle {
+/* pub struct Rectangle {
     top_left_corner : Complex,
     bottom_right_corner : Complex,
 }
@@ -134,7 +137,48 @@ fn find_root(rect: Rectangle, h: f64) -> Option<Rectangle> {
 // main application
 // look for a root of my_poly within a given rectangle
 // and display a complex root upto a given precision,
-// or the absence of such a root 
+// or the absence of such a root  */
+
+
+fn sort3(z1 : &mut Complex,z2: &mut Complex,z3: &mut Complex) -> () {
+    let mut m1 : f64 = z1.module();
+    let mut m2 : f64 = z2.module();
+    let mut m3 : f64 = z3.module();
+
+
+    if m1 > m2 && m1 > m3 {
+        if m2 < m3 {
+            std::mem::swap(z2, z3);
+            std::mem::swap(&mut m2, &mut m3);
+        }
+    } else if m1 < m2 && m1 > m3 {
+        std::mem::swap(z2, z1);
+        std::mem::swap(&mut m1, &mut m2);
+        if m2 < m3 {
+            std::mem::swap(z2, z3);
+            std::mem::swap(&mut m2, &mut m3);
+        }
+    } else {
+        std::mem::swap(z1, z3);
+        std::mem::swap(&mut m1, &mut m3);
+        if m2 < m3 {
+            std::mem::swap(z2, z3);
+            std::mem::swap(&mut m2, &mut m3);
+        }
+    } 
+}
+
+
 fn main() {
-    panic!("not yet implemented !")
+    let array: [String; 3] = ["j'aime".to_string(), "les".to_string(), "pommes".to_string()];
+    for elem  in &array {
+        println!("{}", elem);
+    }
+    let mut z1 = Complex::new(2., 0.);
+    let mut z2 = Complex::new(1., 1.);
+    let mut z3 = Complex::new(0., -1.);
+    sort3(&mut z1, &mut z2, &mut z3);
+    println!("z1 = {} + {}*i", z1.real, z1.imaginary);
+    println!("z2 = {} + {}*i", z2.real, z2.imaginary);
+    println!("z3 = {} + {}*i", z3.real, z3.imaginary);
 }
