@@ -1,5 +1,3 @@
-
-
 type var = string
 type env = (var, int) Hashtbl.t
 type prog = (env * bool) -> unit

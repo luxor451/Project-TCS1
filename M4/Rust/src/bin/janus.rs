@@ -17,11 +17,17 @@ enum Mod {
 // Xor is its own inverse
 impl Mod {
     fn eval(self, v1: i64, v2: i64, b: bool) -> i64 {
-        panic!("not implemented !")
+        match self {
+            Mod::Add => if b {v1+v2} else {v1-v2},
+            Mod::Sub => if b {v1-v2} else {v1+v2},
+            Mod::Mul => if b {v1*v2} else {assert_eq!(v1%v2, 0); v1/v2},
+            Mod::Div => if b {assert_eq!(v1%v2, 0); v1/v2} else {v1*v2},
+            Mod::Xor => if v1 != v2 {1} else {0},
+        }
     }
 }
 
-use std::collections::HashMap;
+use std::{collections::HashMap, intrinsics::needs_drop};
 
 // variables are static constant strings
 type Var = &'static str;
@@ -40,20 +46,35 @@ type Env = HashMap<Var, i64>;
 
 // the minimal closure/program that does nothing.
 fn null() -> impl Fn(&mut Env, bool) {
-    return |env, b| panic!("not implemented !");
+    return |_, _| {};
 }
 
 // the sequence operator that takes 2 closures/programs p1 and p2
 // and returns a closure/program.
 // Evaluation order depends on forward/backward mode b.
 fn seq(p1: impl Fn(&mut Env, bool), p2: impl Fn(&mut Env, bool)) -> impl Fn(&mut Env, bool) {
-    return |env, b| panic!("not implemented !");
+    return move |env, b| {
+        if b {
+            p1(env, b);
+            p2(env, b);
+        } else {
+            p2(env, b);
+            p1(env, b);
+        }
+    }
 }
 
 // atomic instruction that exchanges the values of two variables
 // swap is its own inverse, so b is irrelevant
 fn swap(x1: Var, x2: Var) -> impl Fn(&mut Env, bool) {
-    return |env, b| panic!("not implemented !");
+    return move |env, _| {
+        let v1 = *env.get(x1).unwrap();
+        let v2 = *env.get(x2).unwrap();
+        let rv1 = env.get_mut(x1).unwrap();
+        *rv1 = v2;
+        let rv2 = env.get_mut(x2).unwrap();
+        *rv2 = v1;
+    }
 }
 
 // atomic instruction that updates the value of a variable
