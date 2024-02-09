@@ -80,7 +80,11 @@ fn swap(x1: Var, x2: Var) -> impl Fn(&mut Env, bool) {
 // atomic instruction that updates the value of a variable
 // through an allowed modifier and an closure/expression to be evaluated
 fn assign(x: Var, op: Mod, e: impl Fn(&Env) -> i64) -> impl Fn(&mut Env, bool) {
-    return |env, b| panic!("not implemented !");
+    return move |env, b| {
+        let v = *env.get(x).unwrap();
+        let rv =env.get_mut(x).unwrap();
+
+    }
 }
 
 // reversible conditional statement.
