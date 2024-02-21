@@ -1,1 +1,1 @@
-../../../tex-src/memory-debug/src/buggy-source-std.c
+../../../../tex-src/memory-debug/src/buggy-source.c

@@ -1,1 +1,1 @@
-../../../tex-src/memory/src/pascal-std.c
+../../../../tex-src/memory/src/pascal.c
