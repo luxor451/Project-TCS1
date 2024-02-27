@@ -8,10 +8,11 @@ int main(void) {
     *(p_array + 1) = 1;
 
     // p_array[0] = 2
-    *(p_array - 1) = 2;
+    *(p_array) = 2;
 
     // p_array[3] = 100000
-    *(p_array + 100000) = 3;
+    *(p_array + 3) = 100000;
 
+    free(p_array);
     return 0;
 }
