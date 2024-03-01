@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "projet-2324-rust-std"
+name = "projet"
 version = "0.1.0"
 dependencies = [
  "scanf",
