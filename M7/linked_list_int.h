@@ -2,28 +2,29 @@
 #define LINKED_LIST_INT_H
 
 typedef struct cell_int  cell_int;
-typedef TYPE_TO_BE_DEFINED linked_list_int;
+typedef cell_int* linked_list_int;
 
 struct cell_int {
-    TO_BE_DEFINED
+    int e;
+    cell_int* next;
 };
 
-TYPE_TO_BE_DEFINED nil(ARGS_TO_BE_DEFINED);
+linked_list_int nil();
 
-TYPE_TO_BE_DEFINED cons(ARGS_TO_BE_DEFINED);
+void cons(int, linked_list_int*);
 
-TYPE_TO_BE_DEFINED size(ARGS_TO_BE_DEFINED);
+int size(linked_list_int);
 
-TYPE_TO_BE_DEFINED is_empty(ARGS_TO_BE_DEFINED);
+bool is_empty(linked_list_int);
 
-TYPE_TO_BE_DEFINED get_element(ARGS_TO_BE_DEFINED);
+int get_element(linked_list_int);
 
-TYPE_TO_BE_DEFINED insert_element(ARGS_TO_BE_DEFINED);
+void insert_element(int, linked_list_int);
 
-TYPE_TO_BE_DEFINED remove_element(ARGS_TO_BE_DEFINED);
+void remove_element(int, linked_list_int);
 
-TYPE_TO_BE_DEFINED deallocate_list(ARGS_TO_BE_DEFINED);
+void deallocate_list(linked_list_int);
 
-TYPE_TO_BE_DEFINED print_list(ARGS_TO_BE_DEFINED);
+void print_list(linked_list_int);
 
 #endif
