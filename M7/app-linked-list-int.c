@@ -1,1 +1,6 @@
-../../../tex-src/linked-list/src/app-linked-list-int-std.c
+#include "linked_list_int.h"
+
+int main() {
+
+    return 0;
+}

@@ -1,1 +1,29 @@
-../../../tex-src/linked-list/include/linked_list_int_std.h
+#ifndef LINKED_LIST_INT_H
+#define LINKED_LIST_INT_H
+
+typedef struct cell_int  cell_int;
+typedef TYPE_TO_BE_DEFINED linked_list_int;
+
+struct cell_int {
+    TO_BE_DEFINED
+};
+
+TYPE_TO_BE_DEFINED nil(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED cons(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED size(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED is_empty(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED get_element(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED insert_element(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED remove_element(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED deallocate_list(ARGS_TO_BE_DEFINED);
+
+TYPE_TO_BE_DEFINED print_list(ARGS_TO_BE_DEFINED);
+
+#endif
