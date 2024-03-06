@@ -1,23 +1,80 @@
-//! A demo for unit testing and integration testing (see ../test directory)
-//!
-
-pub fn fact(n: i32) -> i32 {
-    let mut fact: i32 = 1;
-    for i in 1..n + 1 {
-        fact = i * fact;
-    }
-    return fact;
-}
-
 // unit tests
+
+
+
+mod map;
+
 #[cfg(test)]
 mod tests {
-    use super::*;
-
-    #[test]
-    fn check_fact() {
-        assert_eq!(fact(0), 1);
-        assert_eq!(fact(1), 1);
-        assert_eq!(fact(4), 24);
     }
+    #[test]
+    fn check_matrix() {
+        let mut mv = map_load::Matrix::new(vec![1, 2, 3, 4, 5, 6], 2, 3);
+        *mv.get_mut(1, 2) = 10;
+        println!("Display: {}", mv);
+        println!("Debug: {:?}", mv);
+}
+
+
+pub mod map_load {
+    use std::fmt;
+
+    pub struct Edges  {
+        pub down : i32,
+        pub right : i32,
+    }
+
+    pub struct Map {
+        pub width : usize,
+        pub height : usize,
+        pub edges_matrix : Matrix<Edges>
+    }
+
+ 
+
+    #[derive(Debug)]
+    pub struct Matrix<T> {
+        pub vec: Vec<T>,
+        pub row: usize,
+        pub col: usize,
+    }
+
+    impl<T> Matrix<T> {
+        pub fn new(vec: Vec<T>, n_col: usize, n_row: usize) -> Self {
+            assert!(vec.len() == n_row * n_col);
+            Self { vec : vec, row : n_row, col :n_col }
+        }
+
+        pub fn row(&self, row: usize) -> &[T] {
+            let i = self.col * row;
+            &self.vec[i..(i + self.col)]
+        }
+
+        pub fn get(&self,n_row: usize, n_col: usize) -> &T {
+            let i = self.col * n_row;
+            &self.vec[i + n_col]
+        }
+
+        pub fn get_mut(&mut self, n_row: usize, n_col: usize) -> &mut T {
+            let i = self.col * n_row;
+            &mut self.vec[i + n_col]
+        }
+        
+
+    }
+    
+    impl<T: std::fmt::Debug> std::fmt::Display for Matrix<T> {
+        
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            let mut str = String::new();
+            for i in 0..self.row {
+                if i != 0 {
+                    str.push_str(", ");
+                }
+                str.push_str(&format!("{:?}", &self.row(i)));
+            }
+            write!(f, "[{}]", str)
+        }
+    }
+        
 }

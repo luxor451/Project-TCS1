@@ -1,4 +1,4 @@
-//! An integration test file.
+/* //! An integration test file.
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
@@ -31,3 +31,4 @@ fn file_fact() -> io::Result<()> {
     }
     return Ok(());
 }
+ */
