@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <stdbool.h>
 #include "linked_list_int.h"
 
-linked_list_int nil(){
-    return NULL;
-}
+
 
 linked_list_int new_cell(int elem){
     linked_list_int res = NULL;
@@ -16,7 +15,27 @@ linked_list_int new_cell(int elem){
     return res;
 }
 
-void link_cell(linked_list_int cell1, linked_list_int cell2){
+linked_list_int get_out_list(linked_list_int l, int pos){
+    linked_list_int current = l;
+    if (pos == 0)
+    {
+        NULL;
+    }
+    else 
+    {
+        for (int i = 0; i < pos-1; i++)
+        {
+            current = current->next;
+        }
+    }
+    return current;
+}
+
+linked_list_int nil(){
+    return NULL;
+}
+
+void link_cells(linked_list_int cell1, linked_list_int cell2){
     assert(cell1->next == NULL);
     cell1->next= cell2;
 }
@@ -37,19 +56,41 @@ int size(linked_list_int l){
     return res;   
 }
 
-bool is_bool(linked_list_int l){
+bool is_empty(linked_list_int l){
     return l == NULL;
 }
 
-int get_elem(linked_list_int l){
-    int res = l->e;
-    for (cell_int* p = l; p->next != NULL; p = p->next)
+int get_elem(linked_list_int l, int pos){
+    assert(pos <= size(l) - 1);
+    linked_list_int current = l;
+    for (int i = 0; i < pos; i++)
     {
-        res = p->e;
+        current = current->next;
     }
-    return res;   
+    return current->e;
 }
 
-void insert_elem(int e, linked_list_int l){
 
+
+void insert_elem(linked_list_int l, int pos, int e){
+    assert(pos <= size(l));
+    linked_list_int new_maillion = new_cell(e);
+    linked_list_int current = get_out_list(l, pos);
+    link_cells(new_maillion, current->next);
+    link_cells(current, new_maillion);
+}
+
+void remove_elem(linked_list_int l, int pos){
+    assert(pos <= size(l) - 1);
+    linked_list_int current = get_out_list(l, pos);
+    current = current->next;
+}
+
+void dealocate_list(linked_list_int l){
+    linked_list_int current;
+    while (l != NULL) {
+        current = l;
+        l = l->next;
+        free(current);
+    }
 }

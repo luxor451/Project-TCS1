@@ -1,5 +1,6 @@
 #ifndef LINKED_LIST_INT_H
 #define LINKED_LIST_INT_H
+#include <stdbool.h>
 
 typedef struct cell_int  cell_int;
 typedef cell_int* linked_list_int;
@@ -17,7 +18,7 @@ int size(linked_list_int);
 
 bool is_empty(linked_list_int);
 
-int get_element(linked_list_int);
+void get_element(linked_list_int, int);
 
 void insert_element(int, linked_list_int);
 
