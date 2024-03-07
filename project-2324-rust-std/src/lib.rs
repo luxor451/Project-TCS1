@@ -1,21 +1,3 @@
-// unit tests
-
-
-
-mod map;
-
-#[cfg(test)]
-mod tests {
-    }
-    #[test]
-    fn check_matrix() {
-        let mut mv = map_load::Matrix::new(vec![1, 2, 3, 4, 5, 6], 2, 3);
-        *mv.get_mut(1, 2) = 10;
-        println!("Display: {}", mv);
-        println!("Debug: {:?}", mv);
-}
-
-
 pub mod map_load {
     use std::fmt;
 
@@ -23,6 +5,8 @@ pub mod map_load {
         pub down : i32,
         pub right : i32,
     }
+
+    
 
     pub struct Map {
         pub width : usize,
@@ -41,6 +25,7 @@ pub mod map_load {
 
     impl<T> Matrix<T> {
         pub fn new(vec: Vec<T>, n_col: usize, n_row: usize) -> Self {
+            print!("{}\n", vec.len());
             assert!(vec.len() == n_row * n_col);
             Self { vec : vec, row : n_row, col :n_col }
         }
@@ -59,8 +44,6 @@ pub mod map_load {
             let i = self.col * n_row;
             &mut self.vec[i + n_col]
         }
-        
-
     }
     
     impl<T: std::fmt::Debug> std::fmt::Display for Matrix<T> {
@@ -74,6 +57,17 @@ pub mod map_load {
                 str.push_str(&format!("{:?}", &self.row(i)));
             }
             write!(f, "[{}]", str)
+        }
+    }
+
+    impl std::fmt::Display for Edges {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(f, "(down : {} ; right : {})", self.down, self.right)
+        }
+    }
+    impl std::fmt::Debug for Edges {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(f, "(down : {} ; right : {})", self.down, self.right)
         }
     }
         
