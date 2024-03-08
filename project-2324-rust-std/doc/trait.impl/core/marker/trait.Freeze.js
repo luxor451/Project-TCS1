@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"lib":[["impl Freeze for <a class=\"struct\" href=\"lib/map_load/struct.Edges.html\" title=\"struct lib::map_load::Edges\">Edges</a>",1,["lib::map_load::Edges"]],["impl Freeze for <a class=\"struct\" href=\"lib/map_load/struct.Map.html\" title=\"struct lib::map_load::Map\">Map</a>",1,["lib::map_load::Map"]],["impl&lt;T&gt; Freeze for <a class=\"struct\" href=\"lib/map_load/struct.Matrix.html\" title=\"struct lib::map_load::Matrix\">Matrix</a>&lt;T&gt;",1,["lib::map_load::Matrix"]]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

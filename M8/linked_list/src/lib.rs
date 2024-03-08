@@ -1,4 +1,4 @@
-use std::fmt::*;
+use std::{cell, fmt::*};
 struct Cell<T> {
     hd: T,
     tl: List<T>,
@@ -7,7 +7,14 @@ pub struct List<T>(Option<Box<Cell<T>>>);
 
 impl<T: Display> Display for List<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        panic!("not yet implemented")
+        write!(f, "[")?;
+        let mut cur =  self;
+        while let Some(cell) = &cur.0{
+            write!(f, "{}, ", cell.hd);
+            cur = &cell.tl
+        }
+        write!(f, "]")?;
+        return Ok(());
     }
 }
 impl<T> List<T> {
@@ -15,13 +22,17 @@ impl<T> List<T> {
 
     // functions from the signature
     pub fn nil() -> List<T> {
-        panic!("not yet implemented")
+        List(None)
     }
     pub fn cons(t: T, q: List<T>) -> List<T> {
-        panic!("not yet implemented")
+        List(Some(Box::new(Cell {hd: t, tl :q})))
     }
     pub fn size(&self) -> usize {
-        panic!("not yet implemented")
+        let mut res = 0;
+        while self != List(None) {
+            
+        }
+        return res;
     }
     pub fn get_element(&self, pos: usize) -> &T {
         panic!("not yet implemented")
