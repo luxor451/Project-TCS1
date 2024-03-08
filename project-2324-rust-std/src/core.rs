@@ -1,5 +1,3 @@
-pub mod find_neighbors;
-
 pub mod map_load {
     use std::fmt;
 
@@ -56,7 +54,7 @@ pub mod map_load {
                 }
                 str.push_str(&format!("{:?}", &self.row(i)));
             }
-            write!(f, "[{}]", str)
+            write!(f, "[\n{}\n]", str)
         }
     }
 
@@ -73,7 +71,7 @@ pub mod map_load {
 }
 
 pub mod neighors {
-    use crate::map_load::*;
+    use crate::core::map_load::*;
     use std::fmt;
 
     pub struct Neighbors {
@@ -161,6 +159,68 @@ pub mod neighors {
             self.nb == other.nb
                 && self.neighbors_names == other.neighbors_names
                 && self.edges_cost == other.edges_cost
+        }
+    }
+}
+
+pub mod maze {
+    use std::fmt;
+    pub struct Maze {
+        pub width: usize,
+        pub height: usize,
+        pub predecessor: Vec<i32>,
+        pub cost: i32,
+    }
+
+    impl std::fmt::Display for Maze {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(f, "{}\n", &"⬛".repeat(2 * self.width + 1))?;
+
+            for y in 0..self.height - 1 {
+                write!(f, "⬛")?;
+                for x in 0..self.width - 1 {
+                    write!(f, "⬜")?;
+                    if (self.predecessor[(y * self.width) + x + 1] == ((y * self.width) + x) as i32)
+                        || (self.predecessor[(y * self.width) + x]
+                            == ((y * self.width) + x + 1) as i32)
+                    {
+                        write!(f, "⬜")?;
+                    } else {
+                        write!(f, "⬛")?;
+                    }
+                }
+
+                write!(f, "⬜⬛\n⬛")?;
+
+                for x in 0..self.width {
+                    if (self.predecessor[(y + 1) * self.width + x] == (y * self.width + x) as i32)
+                        || (self.predecessor[y * self.width + x]
+                            == ((y + 1) * self.width + x) as i32)
+                    {
+                        write!(f, "⬜")?;
+                    } else {
+                        write!(f, "⬛")?;
+                    }
+                    write!(f, "⬛")?;
+                }
+
+                write!(f, "\n")?;
+            }
+            write!(f, "⬛")?;
+            for x in 0..self.width - 1 {
+                write!(f, "⬜")?;
+                if (self.predecessor[((self.height - 1) * self.width) + x + 1]
+                    == (((self.height - 1) * self.width) + x) as i32)
+                    || (self.predecessor[((self.height - 1) * self.width) + x]
+                        == (((self.height - 1) * self.width) + x + 1) as i32)
+                {
+                    write!(f, "⬜")?;
+                } else {
+                    write!(f, "⬛")?;
+                }
+            }
+            write!(f, "⬜⬛")?;
+            write!(f, "\n{}", &"⬛".repeat(2 * self.width + 1))
         }
     }
 }

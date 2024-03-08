@@ -1,5 +1,5 @@
-use crate::map_load::*;
-use crate::neighors::*;
+use crate::core::neighors::*;
+use crate::Map;
 
 pub fn find_neighbors(map: &Map, node_nubmer: usize) -> Neighbors {
     let x = node_nubmer % map.width;

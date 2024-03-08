@@ -1,4 +1,5 @@
-use projet::map_load::*;
+use crate::core::map_load::*;
+use core::*;
 use scanf::sscanf;
 use std::fs::File;
 use std::io::prelude::*;
