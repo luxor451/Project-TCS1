@@ -8,7 +8,7 @@ pub mod find_neighbors;
 #[cfg(test)]
 mod test {
     use crate::{
-        core::{maze::Maze, neighors::Neighbors},
+        core::{maze::*, neighors::Neighbors},
         find_neighbors::find_neighbors,
         map_loader::load_map,
     };
@@ -82,6 +82,25 @@ mod test {
         };
         println!("{}", maze_2048);
     }
+
+    #[test]
+    fn test_maze_in_pbm() {
+        
+        print!("pbm test on maze_2048 :\n");
+        let maze_array_2048: Vec<i32> = vec![
+            -1, 0, 3, 13, 14, 4, 7, 17, 18, 19, 11, 1, 22, 12, 13, 14, 15, 18, 28, 29, 10, 20, 21,
+            22, 34, 26, 16, 26, 38, 28, 20, 21, 31, 32, 44, 25, 37, 27, 37, 38, 50, 51, 32, 42, 43,
+            46, 36, 37, 58, 59, 51, 52, 42, 63, 53, 56, 46, 47, 59, 69, 61, 62, 52, 73, 54, 64, 65,
+            66, 67, 79, 60, 72, 62, 72, 75, 65, 66, 78, 68, 78,
+        ];
+        let maze_2048 = Maze {
+            width: 10,
+            height: 8,
+            predecessor: maze_array_2048,
+            cost: -666,
+        };
+        let _ = Maze::write_maze_in_pbm(&maze_2048);
+    }
 }
 
 fn main() {
@@ -101,4 +120,5 @@ fn main() {
     println!("\nload_map test :\n");
     let test_map = load_map(filename.to_string());
     println!("Display:\n {}", test_map.edges_matrix);
+   
 }

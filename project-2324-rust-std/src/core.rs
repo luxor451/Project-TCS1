@@ -164,12 +164,75 @@ pub mod neighors {
 }
 
 pub mod maze {
-    use std::fmt;
+    use std::{fmt, fs::File, io::BufWriter};
+    use std::io::Write;
+    
     pub struct Maze {
         pub width: usize,
         pub height: usize,
         pub predecessor: Vec<i32>,
         pub cost: i32,
+    }
+
+    impl Maze {
+        pub fn write_maze_in_pbm(&self) -> std::io::Result<()> {
+            let file = File::create("print_maze.pbm")?;
+            // First row of wall
+            let mut writer = BufWriter::new(&file);
+            write!(writer, "P1\n{} {}\n", 2 * self.width + 1, 2 * self.height + 1)?;
+            write!(writer, "{}", &"1 ".repeat(2 * self.width))?; 
+            write!(writer, "1\n")?;
+
+
+            for y in 0..self.height - 1 {
+                write!(writer, "1 ")?;
+                for x in 0..self.width - 1 {
+                    write!(writer, "0 ")?;
+                    if (self.predecessor[(y * self.width) + x + 1] == ((y * self.width) + x) as i32)
+                        || (self.predecessor[(y * self.width) + x]
+                            == ((y * self.width) + x + 1) as i32)
+                    {
+                        write!(writer, "0 ")?;
+                    } else {
+                        write!(writer, "1 ")?;
+                    }
+                }
+                write!(writer, "0 1\n")?;
+                write!(writer, "1 ")?;
+                for x in 0..self.width {
+                    if (self.predecessor[(y + 1) * self.width + x] == (y * self.width + x) as i32)
+                        || (self.predecessor[y * self.width + x]
+                            == ((y + 1) * self.width + x) as i32)
+                    {
+                        write!(writer, "0 ")?;
+                    } else {
+                        write!(writer, "1 ")?;
+                    }
+                    write!(writer, "1")?;
+                    if x != self.width -1 {
+                        write!(writer, " ")?;
+                    }
+                }
+                write!(writer, "\n")?;
+            }
+            write!(writer, "1 ")?;
+            for x in 0..self.width - 1 {
+                write!(writer, "0 ")?;
+                if (self.predecessor[((self.height - 1) * self.width) + x + 1]
+                    == (((self.height - 1) * self.width) + x) as i32)
+                    || (self.predecessor[((self.height - 1) * self.width) + x]
+                        == (((self.height - 1) * self.width) + x + 1) as i32)
+                {
+                    write!(writer, "0 ")?;
+                } else {
+                    write!(writer, "1 ")?;
+                }
+            }
+            write!(writer, "0 1\n")?;
+            write!(writer, "{}", &"1 ".repeat(2 * self.width))?;
+            write!(writer, "1")?;
+            Ok(())
+        }
     }
 
     impl std::fmt::Display for Maze {
