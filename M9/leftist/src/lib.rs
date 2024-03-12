@@ -23,6 +23,7 @@ impl<K: Ord + Display, V: Display> Display for LBTree<K, V> {
 impl<K: Ord, V> LBTree<K, V> {
     // here write auxiliary functions
 }
+
 impl<K: Ord, V> PriorityQueue<K, V> for LBTree<K, V> {
     fn empty() -> Self {
         panic!("not implemented !")
