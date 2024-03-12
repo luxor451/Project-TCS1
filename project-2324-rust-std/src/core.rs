@@ -161,6 +161,19 @@ pub mod neighors {
                 && self.edges_cost == other.edges_cost
         }
     }
+    impl IntoIterator for Neighbors {
+        type Item = (i32, i32); 
+        type IntoIter = std::vec::IntoIter<Self::Item>;
+    
+        fn into_iter(self) -> Self::IntoIter {
+            let mut vec = Vec::new();
+            for i in 0..4 {
+                vec.push((self.neighbors_names[i].clone(), self.edges_cost[i]));
+            }
+            vec.into_iter()
+        }
+    }
+
 }
 
 pub mod maze {
