@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["main"],"mod":["core","find_neighbors","map_loader","prim_naive","tests"]};

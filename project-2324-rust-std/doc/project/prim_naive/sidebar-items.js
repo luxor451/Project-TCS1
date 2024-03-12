@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["prim_naive_function"]};
