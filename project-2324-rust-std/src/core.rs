@@ -140,36 +140,30 @@ pub mod neighors {
     /// Print all the value in Neighbors for each neighbors that exist i.e. != -1
     impl std::fmt::Display for Neighbors {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            let mut str = String::new();
+            write!(f, "[")?;
             for i in 0..4 {
                 if self.neighbors_names[i] != -1 {
                     if i != 0 {
-                        str.push_str(",\n ");
+                        write!(f,",\n ")?;
                     }
-                    str.push_str(&format!(
-                        "({} : {})",
-                        self.neighbors_names[i], self.edges_cost[i]
-                    ));
+                    write!(f, "({} : {})", self.neighbors_names[i], self.edges_cost[i])?;
                 }
             }
-            write!(f, "[{}]", str)
+            write!(f, "]")
         }
     }
 
     /// Print ALL the value in Neighbors
     impl std::fmt::Debug for Neighbors {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            let mut str = String::new();
+            write!(f, "[")?;
             for i in 0..4 {
                 if i != 0 {
-                    str.push_str(",\n ");
+                    write!(f,",\n ")?;
                 }
-                str.push_str(&format!(
-                    "({} : {})",
-                    self.neighbors_names[i], self.edges_cost[i]
-                ));
+                write!(f, "({} : {})", self.neighbors_names[i], self.edges_cost[i])?;
             }
-            write!(f, "[{}]", str)
+            write!(f, "]")
         }
     }
     /// Define equality for Neighbors : two neighbors are equal iff they have the same neighbors with the same edges cost
@@ -185,7 +179,7 @@ pub mod neighors {
         type Item = (i32, i32);
         type IntoIter = std::vec::IntoIter<Self::Item>;
         fn into_iter(self) -> Self::IntoIter {
-            let mut vec = Vec::new();
+            let mut vec: Vec<(i32, i32)> = Vec::new();
             for i in 0..4 {
                 vec.push((self.neighbors_names[i].clone(), self.edges_cost[i]));
             }
@@ -211,7 +205,7 @@ pub mod maze {
         pub fn write_maze_in_pbm(&self) -> std::io::Result<()> {
             let file = File::create("print_maze.pbm")?;
             // First row of wall
-            let mut writer = BufWriter::new(&file);
+            let mut writer: BufWriter<&File> = BufWriter::new(&file);
             write!(
                 writer,
                 "P1\n{} {}\n",
@@ -291,7 +285,6 @@ pub mod maze {
         // Implementation details : same algorithm as for pbm files
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             write!(f, "{}\n", &"⬛".repeat(2 * self.width + 1))?;
-
             for y in 0..self.height - 1 {
                 write!(f, "⬛")?;
                 for x in 0..self.width - 1 {

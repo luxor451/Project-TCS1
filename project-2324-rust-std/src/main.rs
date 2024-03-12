@@ -3,7 +3,7 @@ use std::env;
 pub mod map_loader;
 mod prim_naive;
 mod tests;
-use crate::map_loader::load_map;
+use crate::{core::maze::Maze, map_loader::load_map, prim_naive::prim_naive_function};
 pub mod core;
 pub mod find_neighbors;
 
@@ -15,13 +15,22 @@ fn main() {
     }
     //Matrix test
     println!("\nMatrix test :\n");
-    let filename = &args[1];
-    let mut mv = Matrix::new(vec![1, 2, 3, 4, 5, 6], 2, 3);
+    let filename: &String = &args[1];
+    let mut mv: Matrix<i32> = Matrix::new(vec![1, 2, 3, 4, 5, 6], 2, 3);
     *mv.get_mut(1, 2) = 10;
     println!("Display:\n {}", mv);
     println!("Debug: \n{:?}", mv);
     //load_map test
     println!("\nload_map test :\n");
-    let test_map = load_map(filename.to_string());
+    let test_map: Map = load_map(filename.to_string());
     println!("Display:\n {}", test_map.edges_matrix);
+    let prim: (Vec<i32>, i32) = prim_naive_function(&test_map);
+    let maze_2048: Maze = Maze {
+        width: 10,
+        height: 8,
+        predecessor: prim.0,
+        cost: prim.1,
+    };
+    println!("\n{} \n ^^ Maze generated with prim_naive", maze_2048);
+
 }

@@ -8,9 +8,9 @@ use std::io::BufReader;
 /// Return a map struct that represent the map given at filename
 pub fn load_map(filename: String) -> Map {
     //read file
-    let file = File::open(&filename).unwrap();
-    let mut reader = BufReader::new(file);
-    let mut line = String::new();
+    let file: File = File::open(&filename).unwrap();
+    let mut reader: BufReader<File> = BufReader::new(file);
+    let mut line: String = String::new();
     reader.read_line(&mut line).unwrap();
 
     // read and print dimensions in the first line
@@ -19,11 +19,11 @@ pub fn load_map(filename: String) -> Map {
     sscanf!(&line, "{} {}", width, height).unwrap();
 
     //initialze the edges matrix
-    let mut vector_temp = Vec::with_capacity(width * height);
+    let mut vector_temp: Vec<Edges> = Vec::with_capacity(width * height);
     for _i in 0..width * height {
         vector_temp.push(Edges { down: 0, right: 0 });
     }
-    let mut edges_matrix = Matrix::new(vector_temp, width, height);
+    let mut edges_matrix: Matrix<Edges> = Matrix::new(vector_temp, width, height);
 
     //actually read the map
     let mut below: i32 = 0;
