@@ -147,7 +147,7 @@ pub mod neighors {
             for i in 0..4 {
                 if self.neighbors_names[i] != -1 {
                     if i != 0 {
-                        write!(f,",\n ")?;
+                        write!(f, ",\n ")?;
                     }
                     write!(f, "({} : {})", self.neighbors_names[i], self.edges_cost[i])?;
                 }
@@ -162,7 +162,7 @@ pub mod neighors {
             write!(f, "[")?;
             for i in 0..4 {
                 if i != 0 {
-                    write!(f,",\n ")?;
+                    write!(f, ",\n ")?;
                 }
                 write!(f, "({} : {})", self.neighbors_names[i], self.edges_cost[i])?;
             }
@@ -172,11 +172,17 @@ pub mod neighors {
     /// Define equality for Neighbors : two neighbors are equal iff they have the same neighbors with the same edges cost
     impl PartialEq for Neighbors {
         fn eq(&self, other: &Self) -> bool {
-            self.nb == other.nb
-                && self.neighbors_names == other.neighbors_names
-                && self.edges_cost == other.edges_cost
+            let mut res: bool = false;
+            res &= self.nb == other.nb;
+            for i in 0..4 {
+                if (self.neighbors_names[i] != -1) && (other.neighbors_names[i] != -1) {
+                    res &= (self.neighbors_names[i] == other.neighbors_names[i])
+                        && (self.edges_cost[i] == other.edges_cost[i]);
+                }
+            }
+            res
         }
-    }
+    }   
     /// Define how to iterate throught Neighbors, every iterable is a tuple (i32, i32) with the name of the neighbor and the associated edge cost
     impl IntoIterator for Neighbors {
         type Item = (i32, i32);

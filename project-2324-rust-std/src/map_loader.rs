@@ -1,4 +1,4 @@
-//! Contains the implementation of the load_map function 
+//! Contains the implementation of the load_map function
 
 use crate::core::map_load::*;
 use core::*;

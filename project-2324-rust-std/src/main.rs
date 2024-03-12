@@ -23,7 +23,7 @@ fn main() {
         println!("Please provide a filename");
     }
     let filename: &String = &args[1];
-    
+
     //Matrix test
     /* println!("\nMatrix test :\n");
     let mut mv: Matrix<i32> = Matrix::new(vec![1, 2, 3, 4, 5, 6], 2, 3);
@@ -36,7 +36,7 @@ fn main() {
     /* println!("Display:\n {}", test_map.edges_matrix); */
     let prim: (Vec<i32>, i32) = prim_naive_function(&test_map);
     // Get the dimentions from the filename
-    let numbers: Vec<&str>  = filename.split('_').collect();
+    let numbers: Vec<&str> = filename.split('_').collect();
     let maze_2048: Maze = Maze {
         width: numbers[1].parse::<usize>().ok().unwrap(),
         height: numbers[2].parse::<usize>().ok().unwrap(),
@@ -45,5 +45,4 @@ fn main() {
     };
     println!("\n{} \n ^^ Maze generated with prim_naive", maze_2048);
     let _ = Maze::write_maze_in_pbm(&maze_2048);
-
 }
