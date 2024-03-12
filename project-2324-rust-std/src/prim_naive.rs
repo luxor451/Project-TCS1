@@ -1,8 +1,8 @@
-pub mod core;
+use crate::{core::neighors::Neighbors, find_neighbors::find_neighbors, Map};
 use std::collections::HashSet;
 
-use crate::{core::neighors::Neighbors, find_neighbors::find_neighbors, Map};
-
+/// Naive implementation of prim's algorithm as given in the subject
+/// Use of linear schearch
 pub fn prim_naive_function(map: &Map) -> (Vec<i32>, i32) {
     // Initialize all the variables
     let maze_size: usize = map.width * map.height;
@@ -14,7 +14,12 @@ pub fn prim_naive_function(map: &Map) -> (Vec<i32>, i32) {
     cheapest[v as usize] = 0;
 
     while !capitalize_n.is_empty() {
-        let mut arg_min: i32 = *capitalize_n.iter().next().unwrap();
+        // Get the node that minmize cheapest, other implementation in quote below
+        v = *capitalize_n
+            .iter()
+            .min_by_key(|&node| cheapest[*node as usize])
+            .unwrap();
+        /* let mut arg_min: i32 = *capitalize_n.iter().next().unwrap();
         let mut min: i32 = cheapest[arg_min as usize];
 
         for vertex in capitalize_n.iter() {
@@ -23,7 +28,7 @@ pub fn prim_naive_function(map: &Map) -> (Vec<i32>, i32) {
                 min = cheapest[*vertex as usize];
             }
         }
-        v = arg_min;
+        v = arg_min*/
         capitalize_n.remove(&v);
 
         let neighbors: Neighbors = find_neighbors(map, v as usize);

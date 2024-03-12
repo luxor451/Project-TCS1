@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 
+/// Return a map struct that represent the map given at filename
 pub fn load_map(filename: String) -> Map {
     //read file
     let file = File::open(&filename).unwrap();
