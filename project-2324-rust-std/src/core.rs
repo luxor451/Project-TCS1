@@ -30,29 +30,29 @@ pub mod map_load {
         /// Panics if the length of the vector is not equal to `n_col * n_row`.
         pub fn new(vec: Vec<T>, n_col: usize, n_row: usize) -> Self {
             assert!(vec.len() == n_row * n_col);
-            Self {
+            return Self {
                 vec: vec,
                 row: n_row,
                 col: n_col,
-            }
+            };
         }
 
         /// Returns a slice of the matrix representing the specified row.
         pub fn row(&self, row: usize) -> &[T] {
             let i = self.col * row;
-            &self.vec[i..(i + self.col)]
+            return &self.vec[i..(i + self.col)];
         }
 
         /// Returns a reference to the element at the specified coordinates.
         pub fn get(&self, x: usize, y: usize) -> &T {
             let i = self.col * y;
-            &self.vec[i + x]
+            return &self.vec[i + x];
         }
 
         /// Returns a mutable reference to the element at the specified coordinates.
         pub fn get_mut(&mut self, x: usize, y: usize) -> &mut T {
             let i = self.col * x;
-            &mut self.vec[i + y]
+            return &mut self.vec[i + y];
         }
     }
 
@@ -172,7 +172,7 @@ pub mod neighors {
     /// Define equality for Neighbors : two neighbors are equal iff they have the same neighbors with the same edges cost
     impl PartialEq for Neighbors {
         fn eq(&self, other: &Self) -> bool {
-            let mut res: bool = false;
+            let mut res: bool = true;
             res &= self.nb == other.nb;
             for i in 0..4 {
                 if (self.neighbors_names[i] != -1) && (other.neighbors_names[i] != -1) {
@@ -180,9 +180,9 @@ pub mod neighors {
                         && (self.edges_cost[i] == other.edges_cost[i]);
                 }
             }
-            res
+            return res;
         }
-    }   
+    }
     /// Define how to iterate throught Neighbors, every iterable is a tuple (i32, i32) with the name of the neighbor and the associated edge cost
     impl IntoIterator for Neighbors {
         type Item = (i32, i32);
@@ -192,7 +192,7 @@ pub mod neighors {
             for i in 0..4 {
                 vec.push((self.neighbors_names[i].clone(), self.edges_cost[i]));
             }
-            vec.into_iter()
+            return vec.into_iter();
         }
     }
 }
@@ -284,8 +284,7 @@ pub mod maze {
             write!(writer, "0 1\n")?;
             // South wall
             write!(writer, "{}", &"1 ".repeat(2 * self.width))?;
-            write!(writer, "1")?;
-            Ok(())
+            write!(writer, "1")
         }
     }
 
