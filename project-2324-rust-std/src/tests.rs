@@ -1,3 +1,5 @@
+//! Test file, contains all the tests for the objects defined in core.rs
+
 #[cfg(test)]
 mod test {
     use crate::{

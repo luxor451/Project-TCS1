@@ -1,3 +1,6 @@
+//! Main library containing most of the implementation for Maps, Neighbors and Maze
+//! Also implement a Matrix<_> struct
+
 pub mod map_load {
     use std::fmt;
 

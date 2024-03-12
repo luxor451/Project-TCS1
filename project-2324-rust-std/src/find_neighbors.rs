@@ -1,3 +1,5 @@
+//! Only contains the find_neighbors functions even thought most of the algorithm is in core::neighbors::Neighbors::new_node
+
 use crate::core::neighors::*;
 use crate::Map;
 

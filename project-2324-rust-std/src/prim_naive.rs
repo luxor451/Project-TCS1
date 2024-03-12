@@ -1,3 +1,5 @@
+//! Implement Prim's algorithm naively, the shearch for the vertex that minimize cheapest is linear
+
 use crate::{core::neighors::Neighbors, find_neighbors::find_neighbors, Map};
 use std::collections::HashSet;
 
