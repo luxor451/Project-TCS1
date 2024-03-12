@@ -28,7 +28,7 @@ pub fn prim_naive_function(map: &Map) -> (Vec<i32>, i32) {
                 min = cheapest[*vertex as usize];
             }
         }
-        v = arg_min*/
+        v = arg_min */
         capitalize_n.remove(&v);
 
         let neighbors: Neighbors = find_neighbors(map, v as usize);
