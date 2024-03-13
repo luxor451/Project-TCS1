@@ -1,1 +1,0 @@
-window.ALL_CRATES = ["memchr","minimal_lexical","nom","project","scanf"];
