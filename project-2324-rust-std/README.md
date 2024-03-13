@@ -1,3 +1,5 @@
+Before all, run the "cargo doc" command to generate the doc for this project
+
 This project since it is in Rust does not respect completly the struture given in the subject
 To use prim's algorithme, you should use the main i.e. run "cargo run --bin projet -- filename"
 This will display in the terminal the maze generated with prim_naive

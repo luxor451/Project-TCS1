@@ -197,7 +197,7 @@ pub mod neighors {
     }
 }
 
-pub mod maze {
+pub mod maze {~
     use std::io::Write;
     use std::{fmt, fs::File, io::BufWriter};
 

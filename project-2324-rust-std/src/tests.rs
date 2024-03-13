@@ -102,7 +102,8 @@ mod test {
         assert_eq!(prim_naive_function(&map_42).1, -762);
         let path_to_test_map_76: &str = "./data/map_10_8_76.txt";
         let map_76: Map = load_map(path_to_test_map_76.to_string());
-        assert_eq!(prim_naive_function(&map_76).1, -695);
+        assert_eq!(prim_naive_function(&map_76).1, -695
+    );
         // map 1024
         let path_to_test_map_1024: &str = "./data/map_10_8_1024.txt";
         let map_1024: Map = load_map(path_to_test_map_1024.to_string());
