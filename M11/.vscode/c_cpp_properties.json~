@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "TCS1-IN MXX lab",
+            "cStandard": "c99",
+            "includePath": ["${workspaceFolder}/**"],
+            "compilerArgs": ["-Wall"]
+        }
+    ],
+    "version": 4
+}
