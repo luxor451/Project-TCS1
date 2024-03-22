@@ -341,3 +341,83 @@ pub mod maze {
         }
     }
 }
+
+
+pub mod binary_heap {
+    use std::fmt;
+
+
+    pub struct Node<T> {
+        pub value: T,
+        pub cost: usize,
+        pub left_child: Option<Box<Node<T>>>,
+        pub right_child: Option<Box<Node<T>>>,
+    }
+
+    pub struct Heap<T> {
+        pub size : usize,
+        pub root: Option<Box<Node<T>>>,
+    }
+
+    impl<T> Heap<T> {
+        pub fn new() -> Self {
+            return Self {
+                size: 0,
+                root: None,
+            };
+        }
+        pub fn is_empty(&self) -> bool {
+            self.size == 0
+        }
+
+        fn father_of_node_n(&mut self, n: usize) -> Option<&mut Box<Node<T>>> {
+            let depth: usize = self.size.ilog2() as usize;
+            let mut p_father_node: Option<&mut Box<Node<T>>> = self.root.as_mut();
+            for i in (1..depth).rev() {
+                if ((n >> i) & 1) == 0 {
+                    p_father_node = p_father_node.unwrap().left_child.as_mut();
+                } else {
+                    p_father_node = p_father_node.unwrap().right_child.as_mut();
+                }
+            }
+            p_father_node
+        }
+
+        pub fn insert(&mut self, new_node : Node<T>) {
+            if self.is_empty() {
+                self.size = 1;
+                self.root = Some(Box::new(new_node));
+            }
+            else {
+                let father_of_new_node: &mut Box<Node<T>> = self.father_of_node_n(self.size + 1).unwrap();
+                match &mut father_of_new_node.left_child {
+                    Some(_) => { father_of_new_node.right_child = Some(Box::new(new_node)); },
+                    None => { father_of_new_node.left_child = Some(Box::new(new_node)); }
+                }
+            }
+        }
+    }
+    impl<T: std::fmt::Debug> std::fmt::Debug for Node<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{:?} : {}", self.value, self.cost)
+        }
+    }
+    impl<T: std::fmt::Debug> std::fmt::Debug for Heap<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result  {
+            write!(f, "Heap : \n")?;
+            write!(f, "Size : {}\n", self.size)?;
+            write!(f, "Root : {:?}\n", self.root)?;
+            let depth: usize = self.size.ilog2() as usize;
+            for i in 1..depth {
+                for j in 0..(2_u32.pow(i as u32)) {
+                    match self.father_of_node_n(j as usize) {
+                        Some(node) => { write!(f, "{:?} ", node)?; },
+                        None => { write!(f, "None ")?; }
+                    }
+                }
+             
+            }
+            write!(f, "\n")
+        }
+    }
+}

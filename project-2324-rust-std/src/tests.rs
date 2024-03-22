@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod test {
     use crate::{
-        core::{maze::*, neighors::Neighbors},
+        core::{binary_heap::{Heap, Node}, maze::*, neighors::Neighbors},
         find_neighbors::find_neighbors,
         map_loader::load_map,
         prim_naive::prim_naive_function,
@@ -112,5 +112,18 @@ mod test {
         let path_to_test_map_2024: &str = "./data/map_10_8_2048.txt";
         let map_2024: Map = load_map(path_to_test_map_2024.to_string());
         assert_eq!(prim_naive_function(&map_2024).1, -666);
+    }
+    #[test]
+    fn test_insert_heap() {
+        let mut new_heap: Heap<i32> = Heap::new();
+        for i in 0..1 {
+            new_heap.insert(Node {
+                value: i,
+                cost: i as usize,
+                left_child: None,
+                right_child: None,
+            });   
+        }
+        new_heap.display();
     }
 }
