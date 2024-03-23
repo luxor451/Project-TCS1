@@ -342,24 +342,25 @@ pub mod maze {
     }
 }
 
-
 pub mod binary_heap {
-    use std::fmt;
+    use std::{cell::RefCell, fmt::Debug, mem::swap, rc::Rc};
 
-
+    #[derive(Debug)]
     pub struct Node<T> {
         pub value: T,
-        pub cost: usize,
-        pub left_child: Option<Box<Node<T>>>,
-        pub right_child: Option<Box<Node<T>>>,
+        pub cost: i64,
+        pub left_child: Option<Rc<NodeCell<T>>>,
+        pub right_child: Option<Rc<NodeCell<T>>>,
     }
+    pub type NodeCell<T> = RefCell<Node<T>>;
 
+    #[derive(Debug)]
     pub struct Heap<T> {
-        pub size : usize,
-        pub root: Option<Box<Node<T>>>,
+        pub size: usize,
+        pub root: Option<Rc<NodeCell<T>>>,
     }
 
-    impl<T> Heap<T> {
+    impl<T: Debug + Default> Heap<T> {
         pub fn new() -> Self {
             return Self {
                 size: 0,
@@ -370,54 +371,74 @@ pub mod binary_heap {
             self.size == 0
         }
 
-        fn father_of_node_n(&mut self, n: usize) -> Option<&mut Box<Node<T>>> {
-            let depth: usize = self.size.ilog2() as usize;
-            let mut p_father_node: Option<&mut Box<Node<T>>> = self.root.as_mut();
-            for i in (1..depth).rev() {
-                if ((n >> i) & 1) == 0 {
-                    p_father_node = p_father_node.unwrap().left_child.as_mut();
-                } else {
-                    p_father_node = p_father_node.unwrap().right_child.as_mut();
-                }
+        pub fn path_to_father_of_node(&self, n: usize) -> Option<Vec<Rc<NodeCell<T>>>> {
+            let depth: usize = n.ilog2() as usize;
+            if depth == 0 {
+                return None;
             }
-            p_father_node
+            let mut path: Vec<_> = Vec::with_capacity(depth + 1);
+            path.push(self.root.as_ref()?.clone());
+            for i in (1..depth).rev() {
+                let node = if ((n >> i) & 1) == 0 {
+                    path.last()?.borrow().left_child.as_ref()?.clone()
+                } else {
+                    path.last()?.borrow().right_child.as_ref()?.clone()
+                };
+                path.push(node);
+            }
+            return Some(path);
         }
 
-        pub fn insert(&mut self, new_node : Node<T>) {
+        pub fn insert(&mut self, new_node: Node<T>) {
+            let cost = new_node.cost;
+            let new_node = Some(Rc::new(RefCell::new(new_node)));
             if self.is_empty() {
                 self.size = 1;
-                self.root = Some(Box::new(new_node));
-            }
-            else {
-                let father_of_new_node: &mut Box<Node<T>> = self.father_of_node_n(self.size + 1).unwrap();
-                match &mut father_of_new_node.left_child {
-                    Some(_) => { father_of_new_node.right_child = Some(Box::new(new_node)); },
-                    None => { father_of_new_node.left_child = Some(Box::new(new_node)); }
-                }
-            }
-        }
-    }
-    impl<T: std::fmt::Debug> std::fmt::Debug for Node<T> {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "{:?} : {}", self.value, self.cost)
-        }
-    }
-    impl<T: std::fmt::Debug> std::fmt::Debug for Heap<T> {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result  {
-            write!(f, "Heap : \n")?;
-            write!(f, "Size : {}\n", self.size)?;
-            write!(f, "Root : {:?}\n", self.root)?;
-            let depth: usize = self.size.ilog2() as usize;
-            for i in 1..depth {
-                for j in 0..(2_u32.pow(i as u32)) {
-                    match self.father_of_node_n(j as usize) {
-                        Some(node) => { write!(f, "{:?} ", node)?; },
-                        None => { write!(f, "None ")?; }
+                self.root = new_node;
+            } else {
+                let path = self.path_to_father_of_node(self.size + 1).unwrap();
+                let father_of_new_node = path.last().unwrap();
+                let mut father_of_new_node = father_of_new_node.borrow_mut();
+
+                match father_of_new_node.left_child {
+                    Some(_) => {
+                        assert!(father_of_new_node.right_child.is_none());
+                        father_of_new_node.right_child = new_node.clone();
+                    }
+                    None => {
+                        father_of_new_node.left_child = new_node.clone();
                     }
                 }
-             
+                let mut path_with_new_node = path.clone();
+                path_with_new_node.push(new_node.clone().unwrap());
+                drop(father_of_new_node);
+                self.size += 1;
+                if path.len() > 1 {
+                    let mut current_index = path_with_new_node.len() - 1;
+                    let mut current_node = path_with_new_node[current_index].borrow_mut();
+                    let mut father_cost = path_with_new_node[current_index - 1].borrow().cost;
+                    while (current_index >= 1) && (father_cost > cost) {
+                        let father = path_with_new_node[current_index - 1].clone();
+                        swap(&mut current_node.cost, &mut father.borrow_mut().cost);
+                        swap(&mut current_node.value, &mut father.borrow_mut().value);
+                        current_index -= 1;
+                        current_node = path_with_new_node[current_index].borrow_mut();
+                        if current_index > 0 {
+                            father_cost = path_with_new_node[current_index - 1].borrow().cost;
+                        }
+                    }
+                }
             }
-            write!(f, "\n")
+        }
+    }
+
+    impl<T: PartialEq> PartialEq for Node<T> {
+        fn eq(&self, other: &Self) -> bool {
+            let mut res = self.cost == other.cost;
+            res &= self.value == other.value;
+            res &= self.left_child == self.left_child;
+            res &= self.right_child == self.right_child;
+            res
         }
     }
 }

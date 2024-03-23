@@ -2,8 +2,14 @@
 
 #[cfg(test)]
 mod test {
+    use std::{cell::RefCell, rc::Rc};
+
     use crate::{
-        core::{binary_heap::{Heap, Node}, maze::*, neighors::Neighbors},
+        core::{
+            binary_heap::{Heap, Node},
+            maze::*,
+            neighors::Neighbors,
+        },
         find_neighbors::find_neighbors,
         map_loader::load_map,
         prim_naive::prim_naive_function,
@@ -102,8 +108,7 @@ mod test {
         assert_eq!(prim_naive_function(&map_42).1, -762);
         let path_to_test_map_76: &str = "./data/map_10_8_76.txt";
         let map_76: Map = load_map(path_to_test_map_76.to_string());
-        assert_eq!(prim_naive_function(&map_76).1, -695
-    );
+        assert_eq!(prim_naive_function(&map_76).1, -695);
         // map 1024
         let path_to_test_map_1024: &str = "./data/map_10_8_1024.txt";
         let map_1024: Map = load_map(path_to_test_map_1024.to_string());
@@ -113,17 +118,121 @@ mod test {
         let map_2024: Map = load_map(path_to_test_map_2024.to_string());
         assert_eq!(prim_naive_function(&map_2024).1, -666);
     }
+
+    #[test]
+    fn test_father_of_node_n() {
+        let node = Node {
+            value: 5,
+            cost: 5,
+            left_child: Some(Rc::new(RefCell::new(Node {
+                value: 21,
+                cost: 21,
+                left_child: Some(Rc::new(RefCell::new(Node {
+                    value: 25,
+                    cost: 25,
+                    left_child: Some(Rc::new(RefCell::new(Node {
+                        value: 80,
+                        cost: 80,
+                        left_child: None,
+                        right_child: None,
+                    }))),
+                    right_child: None,
+                }))),
+                right_child: Some(Rc::new(RefCell::new(Node {
+                    value: 99,
+                    cost: 99,
+                    left_child: None,
+                    right_child: None,
+                }))),
+            }))),
+            right_child: Some(Rc::new(RefCell::new(Node {
+                value: 45,
+                cost: 45,
+
+                left_child: Some(Rc::new(RefCell::new(Node {
+                    value: 75,
+                    cost: 75,
+
+                    left_child: None,
+                    right_child: None,
+                }))),
+                right_child: Some(Rc::new(RefCell::new(Node {
+                    value: 51,
+                    cost: 51,
+
+                    left_child: None,
+                    right_child: None,
+                }))),
+            }))),
+        };
+        let heap = Heap {
+            size: 8,
+            root: Some(Rc::new(RefCell::new(node))),
+        };
+        assert_eq!(heap.path_to_father_of_node(1), None);
+        assert_eq!(
+            heap.path_to_father_of_node(2)
+                .unwrap()
+                .last()
+                .unwrap()
+                .borrow()
+                .value,
+            5
+        );
+        assert_eq!(
+            heap.path_to_father_of_node(3)
+                .unwrap()
+                .last()
+                .unwrap()
+                .borrow()
+                .value,
+            5
+        );
+        assert_eq!(
+            heap.path_to_father_of_node(6)
+                .unwrap()
+                .last()
+                .unwrap()
+                .borrow()
+                .value,
+            45
+        );
+        assert_eq!(
+            heap.path_to_father_of_node(8)
+                .unwrap()
+                .last()
+                .unwrap()
+                .borrow()
+                .value,
+            25
+        );
+        assert_eq!(
+            heap.path_to_father_of_node(5)
+                .unwrap()
+                .last()
+                .unwrap()
+                .borrow()
+                .value,
+            21
+        );
+    }
     #[test]
     fn test_insert_heap() {
         let mut new_heap: Heap<i32> = Heap::new();
-        for i in 0..1 {
+        for i in (0..10).rev() {
             new_heap.insert(Node {
                 value: i,
-                cost: i as usize,
+                cost: i as i64,
                 left_child: None,
                 right_child: None,
-            });   
+            });
         }
-        new_heap.display();
+        new_heap.insert(Node {
+            value: 0,
+            cost: 0,
+            left_child: None,
+            right_child: None,
+        });
+        println!("Heap after insertion : \n{:?}", new_heap);
     }
 }
