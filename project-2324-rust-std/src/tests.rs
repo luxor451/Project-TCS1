@@ -2,7 +2,7 @@
 
 #[cfg(test)]
 mod test {
-    use std::{cell::RefCell, rc::Rc};
+    use std::{cell::RefCell, rc::Rc, vec};
 
     use crate::{
         core::{
@@ -121,7 +121,7 @@ mod test {
 
     #[test]
     fn test_father_of_node_n() {
-        let node = Node {
+        let nodes = Node {
             value: 5,
             cost: 5,
             left_child: Some(Rc::new(RefCell::new(Node {
@@ -167,7 +167,7 @@ mod test {
         };
         let heap = Heap {
             size: 8,
-            root: Some(Rc::new(RefCell::new(node))),
+            root: Some(Rc::new(RefCell::new(nodes))),
         };
         assert_eq!(heap.path_to_father_of_node(1), None);
         assert_eq!(
@@ -227,12 +227,25 @@ mod test {
                 right_child: None,
             });
         }
-        new_heap.insert(Node {
-            value: 0,
-            cost: 0,
-            left_child: None,
-            right_child: None,
-        });
-        println!("Heap after insertion : \n{:?}", new_heap);
+        // println!("Heap after insertion : \n{:?}", new_heap);
+    }
+    #[test]
+    fn test_extract_min() {
+        let mut new_heap: Heap<i32> = Heap::new();
+        for i in (0..50).rev() {
+            new_heap.insert(Node {
+                value: i,
+                cost: i as i64,
+                left_child: None,
+                right_child: None,
+            });
+        }
+        let mut test_vec: Vec<i32> = Vec::new();
+        // println!("Heap before extraction : \n{:?}", new_heap);
+        // println!("Heap after extraction : \n{:?}", new_heap);
+        for _i in 0..50 {
+            test_vec.push(new_heap.extract_min().unwrap());
+        }
+        assert!(test_vec == (0..50).collect::<Vec<i32>>());
     }
 }

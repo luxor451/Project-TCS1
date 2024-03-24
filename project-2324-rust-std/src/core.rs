@@ -343,7 +343,12 @@ pub mod maze {
 }
 
 pub mod binary_heap {
-    use std::{cell::RefCell, fmt::Debug, mem::swap, rc::Rc};
+    use std::{
+        cell::{RefCell, RefMut},
+        fmt::Debug,
+        mem::swap,
+        rc::Rc,
+    };
 
     #[derive(Debug)]
     pub struct Node<T> {
@@ -359,8 +364,18 @@ pub mod binary_heap {
         pub size: usize,
         pub root: Option<Rc<NodeCell<T>>>,
     }
+    impl<T: Default> Default for Node<T> {
+        fn default() -> Self {
+            Node {
+                value: T::default(),
+                cost: 0,
+                left_child: None,
+                right_child: None,
+            }
+        }
+    }
 
-    impl<T: Debug + Default> Heap<T> {
+    impl<T: Debug + Default + Clone> Heap<T> {
         pub fn new() -> Self {
             return Self {
                 size: 0,
@@ -378,8 +393,9 @@ pub mod binary_heap {
             }
             let mut path: Vec<_> = Vec::with_capacity(depth + 1);
             path.push(self.root.as_ref()?.clone());
+
             for i in (1..depth).rev() {
-                let node = if ((n >> i) & 1) == 0 {
+                let node: Rc<RefCell<Node<T>>> = if ((n >> i) & 1) == 0 {
                     path.last()?.borrow().left_child.as_ref()?.clone()
                 } else {
                     path.last()?.borrow().right_child.as_ref()?.clone()
@@ -396,10 +412,8 @@ pub mod binary_heap {
                 self.size = 1;
                 self.root = new_node;
             } else {
-                let path = self.path_to_father_of_node(self.size + 1).unwrap();
-                let father_of_new_node = path.last().unwrap();
-                let mut father_of_new_node = father_of_new_node.borrow_mut();
-
+                let mut path = self.path_to_father_of_node(self.size + 1).unwrap();
+                let mut father_of_new_node = path.last().unwrap().borrow_mut();
                 match father_of_new_node.left_child {
                     Some(_) => {
                         assert!(father_of_new_node.right_child.is_none());
@@ -409,26 +423,202 @@ pub mod binary_heap {
                         father_of_new_node.left_child = new_node.clone();
                     }
                 }
-                let mut path_with_new_node = path.clone();
-                path_with_new_node.push(new_node.clone().unwrap());
+
                 drop(father_of_new_node);
+                path.push(new_node.clone().unwrap());
+
                 self.size += 1;
                 if path.len() > 1 {
-                    let mut current_index = path_with_new_node.len() - 1;
-                    let mut current_node = path_with_new_node[current_index].borrow_mut();
-                    let mut father_cost = path_with_new_node[current_index - 1].borrow().cost;
+                    let mut current_index: usize = path.len() - 1;
+                    let mut current_node: RefMut<'_, Node<T>> = path[current_index].borrow_mut();
+                    let mut father_cost: i64 = path[current_index - 1].borrow().cost;
                     while (current_index >= 1) && (father_cost > cost) {
-                        let father = path_with_new_node[current_index - 1].clone();
+                        let father: Rc<RefCell<Node<T>>> = path[current_index - 1].clone();
                         swap(&mut current_node.cost, &mut father.borrow_mut().cost);
                         swap(&mut current_node.value, &mut father.borrow_mut().value);
                         current_index -= 1;
-                        current_node = path_with_new_node[current_index].borrow_mut();
+                        current_node = path[current_index].borrow_mut();
                         if current_index > 0 {
-                            father_cost = path_with_new_node[current_index - 1].borrow().cost;
+                            father_cost = path[current_index - 1].borrow().cost;
                         }
                     }
                 }
+                drop(path);
             }
+        }
+
+        pub fn heapify_down(&self) -> () {
+            let depth: usize = self.size.ilog2() as usize;
+            let mut path_to_new_pos: Vec<Rc<RefCell<Node<T>>>> = Vec::with_capacity(depth);
+            let cost = self.root.as_ref().unwrap().borrow().cost;
+            path_to_new_pos.push(self.root.as_ref().unwrap().clone());
+
+            while (path_to_new_pos
+                .last()
+                .unwrap()
+                .borrow()
+                .right_child
+                .is_some())
+                && (cost
+                    > path_to_new_pos
+                        .last()
+                        .unwrap()
+                        .borrow()
+                        .right_child
+                        .as_ref()
+                        .unwrap()
+                        .borrow()
+                        .cost
+                    || cost
+                        > path_to_new_pos
+                            .last()
+                            .unwrap()
+                            .borrow()
+                            .left_child
+                            .as_ref()
+                            .unwrap()
+                            .borrow()
+                            .cost)
+            {
+                let node = if path_to_new_pos
+                    .last()
+                    .unwrap()
+                    .borrow()
+                    .left_child
+                    .as_ref()
+                    .unwrap()
+                    .borrow()
+                    .cost
+                    < path_to_new_pos
+                        .last()
+                        .unwrap()
+                        .borrow()
+                        .right_child
+                        .as_ref()
+                        .unwrap()
+                        .borrow()
+                        .cost
+                {
+                    path_to_new_pos
+                        .last()
+                        .unwrap()
+                        .borrow()
+                        .left_child
+                        .as_ref()
+                        .unwrap()
+                        .clone()
+                } else {
+                    path_to_new_pos
+                        .last()
+                        .unwrap()
+                        .borrow()
+                        .right_child
+                        .as_ref()
+                        .unwrap()
+                        .clone()
+                };
+                path_to_new_pos.push(node);
+            }
+
+            if path_to_new_pos
+                .last()
+                .unwrap()
+                .borrow()
+                .left_child
+                .is_some()
+                && path_to_new_pos
+                    .last()
+                    .unwrap()
+                    .borrow()
+                    .left_child
+                    .as_ref()
+                    .unwrap()
+                    .borrow()
+                    .cost
+                    < cost
+            {
+                let node = path_to_new_pos
+                    .last()
+                    .unwrap()
+                    .borrow()
+                    .left_child
+                    .as_ref()
+                    .unwrap()
+                    .clone();
+                path_to_new_pos.push(node);
+            }
+
+            for i in 0..(path_to_new_pos.len() - 1) {
+                swap(
+                    &mut path_to_new_pos[i].borrow_mut().cost,
+                    &mut path_to_new_pos[i + 1].borrow_mut().cost,
+                );
+                swap(
+                    &mut path_to_new_pos[i].borrow_mut().value,
+                    &mut path_to_new_pos[i + 1].borrow_mut().value,
+                );
+            }
+        }
+
+        pub fn extract_min(&mut self) -> Option<T> {
+            if self.size == 0 {
+                return None;
+            }
+            if self.size == 1 {
+                let res = self.root.as_ref().take().unwrap().borrow().value.clone();
+                self.root = None;
+                self.size -= 1;
+                return Some(res);
+            }
+            let path = self.path_to_father_of_node(self.size)?;
+            if path.len() == 1 {
+                let root = self.root.as_ref().take().unwrap().borrow_mut();
+                let res = root.value.clone();
+                let mut new_root = Rc::new(RefCell::new(Node::default()));
+                if root.right_child.is_some() {
+                    let right_child = root.right_child.as_ref().take().unwrap();
+                    let left_child = root.left_child.as_ref().take().unwrap();
+                    if right_child.borrow().cost < left_child.borrow().cost {
+                        right_child.borrow_mut().left_child = Some(left_child.clone());
+                        new_root = right_child.clone();
+                    } else {
+                        left_child.borrow_mut().left_child = Some(right_child.clone());
+                        new_root = left_child.clone();
+                    }
+                } else {
+                    if root.left_child.is_some() {
+                        new_root = root.left_child.as_ref().take().unwrap().clone();
+                    }
+                }
+                self.size -= 1;
+                drop(root);
+                self.root = Some(new_root);
+                return Some(res);
+            }
+
+            let mut root = path[0].borrow_mut();
+            let mut father_of_last_node = path.last().unwrap().borrow_mut();
+            let res = Some(root.value.clone());
+
+            match father_of_last_node.right_child {
+                Some(ref node) => {
+                    root.cost = node.borrow().cost;
+                    root.value = node.borrow().value.clone();
+                    father_of_last_node.right_child = None;
+                }
+                None => {
+                    let left_child = father_of_last_node.left_child.as_ref().unwrap().clone();
+                    root.cost = left_child.borrow().cost;
+                    root.value = left_child.borrow().value.clone();
+                    father_of_last_node.left_child = None;
+                }
+            }
+            self.size -= 1;
+            drop(father_of_last_node);
+            drop(root);
+            drop(path);
+            self.heapify_down();
+            return res;
         }
     }
 
