@@ -1,4 +1,4 @@
-//! Main library containing most of the implementation for Maps, Neighbors and Maze
+//! Main library containing most of the implementation for Maps, Neighbors, Maze and a BinaryHeap implementation
 //! Also implement a Matrix<_> struct
 
 pub mod map_load {
@@ -357,6 +357,8 @@ pub mod binary_heap {
         pub left_child: Option<Rc<NodeCell<T>>>,
         pub right_child: Option<Rc<NodeCell<T>>>,
     }
+
+    // For the sake of readability
     pub type NodeCell<T> = RefCell<Node<T>>;
 
     #[derive(Debug)]
@@ -365,6 +367,7 @@ pub mod binary_heap {
         pub root: Option<Rc<NodeCell<T>>>,
     }
     impl<T: Default> Default for Node<T> {
+        /// Implement a deufalt value for Node : value = T::default(), cost = 0, left_child = None, right_child = None
         fn default() -> Self {
             Node {
                 value: T::default(),
@@ -376,26 +379,33 @@ pub mod binary_heap {
     }
 
     impl<T: Debug + Default + Clone> Heap<T> {
+        /// Return an empty heap
         pub fn new() -> Self {
             return Self {
                 size: 0,
                 root: None,
             };
         }
+        /// Return true if the heap is empty
         pub fn is_empty(&self) -> bool {
             self.size == 0
         }
 
+        /// Return the path to the father of the node n
         pub fn path_to_father_of_node(&self, n: usize) -> Option<Vec<Rc<NodeCell<T>>>> {
             let depth: usize = n.ilog2() as usize;
+            let heap_depth: usize = self.size.ilog2() as usize;
             if depth == 0 {
                 return None;
             }
-            let mut path: Vec<_> = Vec::with_capacity(depth + 1);
+            // Initilaze the Vec at heap_depth in cas we want to modifie it in another function, we don't want to reallocate
+            // Since the depht is at most log2(size) we can allocate it at this size without any problem, only a few elements will be unused
+            let mut path: Vec<_> = Vec::with_capacity(heap_depth);
             path.push(self.root.as_ref()?.clone());
 
+            // For the most part it's the algorith given in the subject
             for i in (1..depth).rev() {
-                let node: Rc<RefCell<Node<T>>> = if ((n >> i) & 1) == 0 {
+                let node: Rc<NodeCell<T>> = if ((n >> i) & 1) == 0 {
                     path.last()?.borrow().left_child.as_ref()?.clone()
                 } else {
                     path.last()?.borrow().right_child.as_ref()?.clone()
@@ -405,54 +415,43 @@ pub mod binary_heap {
             return Some(path);
         }
 
-        pub fn insert(&mut self, new_node: Node<T>) {
-            let cost = new_node.cost;
-            let new_node = Some(Rc::new(RefCell::new(new_node)));
-            if self.is_empty() {
-                self.size = 1;
-                self.root = new_node;
-            } else {
-                let mut path = self.path_to_father_of_node(self.size + 1).unwrap();
-                let mut father_of_new_node = path.last().unwrap().borrow_mut();
-                match father_of_new_node.left_child {
-                    Some(_) => {
-                        assert!(father_of_new_node.right_child.is_none());
-                        father_of_new_node.right_child = new_node.clone();
-                    }
-                    None => {
-                        father_of_new_node.left_child = new_node.clone();
-                    }
-                }
-
-                drop(father_of_new_node);
-                path.push(new_node.clone().unwrap());
-
-                self.size += 1;
-                if path.len() > 1 {
-                    let mut current_index: usize = path.len() - 1;
-                    let mut current_node: RefMut<'_, Node<T>> = path[current_index].borrow_mut();
-                    let mut father_cost: i64 = path[current_index - 1].borrow().cost;
-                    while (current_index >= 1) && (father_cost > cost) {
-                        let father: Rc<RefCell<Node<T>>> = path[current_index - 1].clone();
-                        swap(&mut current_node.cost, &mut father.borrow_mut().cost);
-                        swap(&mut current_node.value, &mut father.borrow_mut().value);
-                        current_index -= 1;
-                        current_node = path[current_index].borrow_mut();
-                        if current_index > 0 {
-                            father_cost = path[current_index - 1].borrow().cost;
-                        }
+        /// Given a new node and a path to the father of the node, balance the heap so that it conserve the heap property
+        pub fn heapify_up(&mut self, new_node: Option<Rc<NodeCell<T>>>,  mut path: Vec<Rc<NodeCell<T>>>){
+            path.push(new_node.clone().unwrap());
+            let cost = new_node.unwrap().borrow().cost;
+            self.size += 1;
+            // If path.len() <=, that means that the node is the root and thus we don't need to do anything
+            if path.len() > 1 {
+                let mut current_index: usize = path.len() - 1;
+                let mut current_node: RefMut<'_, Node<T>> = path[current_index].borrow_mut();
+                let mut father_cost: i64 = path[current_index - 1].borrow().cost;
+                while (current_index >= 1) && (father_cost > cost) {
+                    let father: Rc<NodeCell<T>> = path[current_index - 1].clone();
+                    swap(&mut current_node.cost, &mut father.borrow_mut().cost);
+                    swap(&mut current_node.value, &mut father.borrow_mut().value);
+                    current_index -= 1;
+                    current_node = path[current_index].borrow_mut();
+                    if current_index > 0 {
+                        father_cost = path[current_index - 1].borrow().cost;
                     }
                 }
-                drop(path);
             }
         }
 
+        /// Bubble down the new root to the right place so that the heap property is conserved
+        // Honesty time : Antonin who is currently in 2A and had done a lot of Rust at the ENS last year helped me a lot with this function.
+        // I was not familiar enough with RefCells and Rc to do it by myself at the time
+        // the issues is that since you can only have one mutable reference to a RefCell at a time and variable have very limited lifetime.
+        // The solution that we found was to get evrything in a Vec that would outlive every other variable and only get a node from the Ref that was in the Vec 
+        // and not use intermediate variables that would not live long enough thus giving this not so readable code
         pub fn heapify_down(&self) -> () {
             let depth: usize = self.size.ilog2() as usize;
-            let mut path_to_new_pos: Vec<Rc<RefCell<Node<T>>>> = Vec::with_capacity(depth);
+            let mut path_to_new_pos: Vec<Rc<NodeCell<T>>> = Vec::with_capacity(depth);
             let cost = self.root.as_ref().unwrap().borrow().cost;
             path_to_new_pos.push(self.root.as_ref().unwrap().clone());
 
+            // Construct the path to the new position
+            // While the last node has a right child and the cost is greater than one of the children
             while (path_to_new_pos
                 .last()
                 .unwrap()
@@ -480,6 +479,7 @@ pub mod binary_heap {
                             .borrow()
                             .cost)
             {
+                // Get the child with the smallest cost
                 let node = if path_to_new_pos
                     .last()
                     .unwrap()
@@ -517,9 +517,11 @@ pub mod binary_heap {
                         .unwrap()
                         .clone()
                 };
+                // Push the new node in the Vec
                 path_to_new_pos.push(node);
             }
 
+            // If we're in a postion where the Node as a left child and  not a right child
             if path_to_new_pos
                 .last()
                 .unwrap()
@@ -548,6 +550,7 @@ pub mod binary_heap {
                 path_to_new_pos.push(node);
             }
 
+            // Swap the cost and value of the nodes
             for i in 0..(path_to_new_pos.len() - 1) {
                 swap(
                     &mut path_to_new_pos[i].borrow_mut().cost,
@@ -560,10 +563,41 @@ pub mod binary_heap {
             }
         }
 
+        /// Insert new_node in the heap and balance it such it conserve the heap property
+        pub fn insert(&mut self, new_node: Node<T>) {
+            // To note: if a node as a right child in a heap, it implies that it has a left child
+            let new_node = Some(Rc::new(RefCell::new(new_node)));
+            if self.is_empty() {
+                self.size = 1;
+                self.root = new_node;
+            } else {
+                // Insert in the last position
+                let path = self.path_to_father_of_node(self.size + 1).unwrap();
+                let mut father_of_new_node = path.last().unwrap().borrow_mut();
+                // If it has a left child, the new_node become the right child 
+                match father_of_new_node.left_child {
+                    Some(_) => {
+                        assert!(father_of_new_node.right_child.is_none());
+                        father_of_new_node.right_child = new_node.clone();
+                    }
+                    None => {
+                        father_of_new_node.left_child = new_node.clone();
+                    }
+                }
+                // Destroy this variable because it his linked to path and we want to give the ownership of path to heapify_up
+                drop(father_of_new_node);
+                self.heapify_up(new_node, path);
+            }
+        }
+
+        /// Extract the minimum value of the heap and balance it such it conserve the heap property
         pub fn extract_min(&mut self) -> Option<T> {
+            // Base case: 
+            // Empty heap
             if self.size == 0 {
                 return None;
             }
+            // Heap with just a root, return the value of the root and make the heap empty
             if self.size == 1 {
                 let res = self.root.as_ref().take().unwrap().borrow().value.clone();
                 self.root = None;
@@ -571,6 +605,9 @@ pub mod binary_heap {
                 return Some(res);
             }
             let path = self.path_to_father_of_node(self.size)?;
+            // If it had between 2 and 3 nodes, we return the root and make the smallest node the root, we have to do this because if the last node and the father of the last node are the same
+            // beacuse root and father_of_last_node defined later will be 2 RefMut to the same RefCell and thus a runtime error
+            // In this implementation it his done by destroying (with .take()) then re-constructing the heap
             if path.len() == 1 {
                 let root = self.root.as_ref().take().unwrap().borrow_mut();
                 let res = root.value.clone();
@@ -599,7 +636,7 @@ pub mod binary_heap {
             let mut root = path[0].borrow_mut();
             let mut father_of_last_node = path.last().unwrap().borrow_mut();
             let res = Some(root.value.clone());
-
+            // Remove the last node
             match father_of_last_node.right_child {
                 Some(ref node) => {
                     root.cost = node.borrow().cost;
@@ -614,6 +651,7 @@ pub mod binary_heap {
                 }
             }
             self.size -= 1;
+            // Destroy every posible RefMut that might be in the path to give complete ownership to heapify_down
             drop(father_of_last_node);
             drop(root);
             drop(path);
@@ -623,6 +661,7 @@ pub mod binary_heap {
     }
 
     impl<T: PartialEq> PartialEq for Node<T> {
+        /// Define equality for Node : two nodes are equal iff they have the same value, cost, left_child and right_child
         fn eq(&self, other: &Self) -> bool {
             let mut res = self.cost == other.cost;
             res &= self.value == other.value;

@@ -2,6 +2,7 @@
 
 #[cfg(test)]
 mod test {
+    use csv::Writer;
     use std::{cell::RefCell, rc::Rc, vec};
 
     use crate::{
@@ -121,6 +122,7 @@ mod test {
 
     #[test]
     fn test_father_of_node_n() {
+        // This is the heap used in the subject
         let nodes = Node {
             value: 5,
             cost: 5,
@@ -217,20 +219,7 @@ mod test {
         );
     }
     #[test]
-    fn test_insert_heap() {
-        let mut new_heap: Heap<i32> = Heap::new();
-        for i in (0..10).rev() {
-            new_heap.insert(Node {
-                value: i,
-                cost: i as i64,
-                left_child: None,
-                right_child: None,
-            });
-        }
-        // println!("Heap after insertion : \n{:?}", new_heap);
-    }
-    #[test]
-    fn test_extract_min() {
+    fn test_heap_correctness() {
         let mut new_heap: Heap<i32> = Heap::new();
         for i in (0..50).rev() {
             new_heap.insert(Node {
@@ -242,10 +231,50 @@ mod test {
         }
         let mut test_vec: Vec<i32> = Vec::new();
         // println!("Heap before extraction : \n{:?}", new_heap);
-        // println!("Heap after extraction : \n{:?}", new_heap);
         for _i in 0..50 {
             test_vec.push(new_heap.extract_min().unwrap());
         }
+        // println!("Heap after extraction : \n{:?}", new_heap);
         assert!(test_vec == (0..50).collect::<Vec<i32>>());
     }
+    use std::error::Error;
+    #[test]
+    // too long to run (around 3 minutes on my machine (Acer Swift 3 2021 with an Ryzen 5 4500H running on Manjaro))
+    #[ignore]
+    fn test_heap_complexity() -> Result<(), Box<dyn Error>> {
+        let mut wtr = Writer::from_path("./heap_correctness.csv")?;
+        for x in 1..20 {
+            let mut new_heap: Heap<i32> = Heap::new();
+            let number_of_nodes = 20 * (2 as i32).pow(x);
+            let insert_start = std::time::Instant::now();
+            for i in 0..number_of_nodes {
+                new_heap.insert(Node {
+                    value: i,
+                    cost: i as i64,
+                    left_child: None,
+                    right_child: None,
+                });
+                
+            }
+            
+            let insert_duration = insert_start.elapsed();
+            
+           
+            
+            let extract_start = std::time::Instant::now();
+            for _i in 0..number_of_nodes {
+                let _min = new_heap.extract_min(); 
+            }
+            let time_to_extract = extract_start.elapsed();
+            // println!("{} nodes inserted in {} ms, path to father of last node extracted in {} ms", number_of_nodes, insert_duration.as_micros(), time_to_extract.as_micros());
+            wtr.write_record(&[
+                number_of_nodes.to_string(),
+                insert_duration.as_nanos().to_string(),
+                time_to_extract.as_nanos().to_string(),
+            ])?
+        }
+        wtr.flush()?;
+        Ok(())
+    }
+
 }
