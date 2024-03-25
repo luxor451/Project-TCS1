@@ -1,3 +1,4 @@
 /target
 print_maze.pbm
 /.vscode
+heap_correctness.csv
