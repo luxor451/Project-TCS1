@@ -2,6 +2,7 @@
 
 #[cfg(test)]
 mod test {
+
     use csv::Writer;
     use std::{cell::RefCell, rc::Rc, vec};
 
@@ -170,6 +171,7 @@ mod test {
         let heap = Heap {
             size: 8,
             root: Some(Rc::new(RefCell::new(nodes))),
+            pos: Vec::new(),
         };
         assert_eq!(heap.path_to_father_of_node(1), None);
         assert_eq!(
@@ -220,23 +222,30 @@ mod test {
     }
     #[test]
     fn test_heap_correctness() {
-        let mut new_heap: Heap<i32> = Heap::new();
-        for i in (0..50).rev() {
-            new_heap.insert(Node {
+        let number_of_nodes = 50;
+        let mut new_heap: Heap<i32> = Heap::default();
+        for i in 0..number_of_nodes {
+            let _n = new_heap.insert(Rc::new(RefCell::new(Node {
                 value: i,
                 cost: i as i64,
                 left_child: None,
                 right_child: None,
-            });
+            })));
         }
+
         let mut test_vec: Vec<i32> = Vec::new();
         // println!("Heap before extraction : \n{:?}", new_heap);
-        for _i in 0..50 {
-            test_vec.push(new_heap.extract_min().unwrap());
+        let min = new_heap.extract_min();
+        test_vec.push(min.0.unwrap());
+        for _i in 1..number_of_nodes {
+            let min = new_heap.extract_min();
+            test_vec.push(min.0.unwrap());
         }
+
         // println!("Heap after extraction : \n{:?}", new_heap);
-        assert!(test_vec == (0..50).collect::<Vec<i32>>());
+        assert!(test_vec == (0..number_of_nodes).collect::<Vec<i32>>());
     }
+
     use std::error::Error;
     #[test]
     // too long to run (around 3 minutes on my machine (Acer Swift 3 2021 with an Ryzen 5 4500H running on Manjaro))
@@ -244,37 +253,59 @@ mod test {
     fn test_heap_complexity() -> Result<(), Box<dyn Error>> {
         let mut wtr = Writer::from_path("./heap_correctness.csv")?;
         for x in 1..20 {
-            let mut new_heap: Heap<i32> = Heap::new();
+            let mut new_heap: Heap<i32> = Heap::default();
             let number_of_nodes = 20 * (2 as i32).pow(x);
             let insert_start = std::time::Instant::now();
             for i in 0..number_of_nodes {
-                new_heap.insert(Node {
+                let _newnode = new_heap.insert(Rc::new(RefCell::new(Node {
                     value: i,
                     cost: i as i64,
                     left_child: None,
                     right_child: None,
-                });
-                
+                })));
             }
-            
+
             let insert_duration = insert_start.elapsed();
-            
-           
-            
+
             let extract_start = std::time::Instant::now();
             for _i in 0..number_of_nodes {
-                let _min = new_heap.extract_min(); 
+                let _min = new_heap.extract_min();
             }
             let time_to_extract = extract_start.elapsed();
             // println!("{} nodes inserted in {} ms, path to father of last node extracted in {} ms", number_of_nodes, insert_duration.as_micros(), time_to_extract.as_micros());
+
             wtr.write_record(&[
                 number_of_nodes.to_string(),
-                insert_duration.as_nanos().to_string(),
-                time_to_extract.as_nanos().to_string(),
+                insert_duration.as_millis().to_string(),
+                time_to_extract.as_millis().to_string(),
             ])?
         }
         wtr.flush()?;
         Ok(())
     }
+    #[test]
+    fn test_change_cost() {
+        let number_of_nodes = 20;
+        let mut new_heap: Heap<i32> = Heap::default();
 
+        for i in (0..number_of_nodes).filter(|&x| x != 15) {
+            let _n = new_heap.insert(Rc::new(RefCell::new(Node {
+                value: i,
+                cost: i as i64,
+                left_child: None,
+                right_child: None,
+            })));
+        }
+        let the_15_th_node = Rc::new(RefCell::new(Node {
+            value: 15,
+            cost: 15,
+            left_child: None,
+            right_child: None,
+        }));
+        let n = new_heap.insert(the_15_th_node.clone());
+        new_heap.change_cost(the_15_th_node, n, -100);
+        assert_eq!(new_heap.extract_min().0.unwrap(), 15);
+
+      
+    }
 }

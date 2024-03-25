@@ -10,6 +10,7 @@
 use core::map_load::*;
 use std::env;
 pub mod map_loader;
+mod prim_bh;
 mod prim_naive;
 mod tests;
 use crate::{core::maze::Maze, map_loader::load_map, prim_naive::prim_naive_function};

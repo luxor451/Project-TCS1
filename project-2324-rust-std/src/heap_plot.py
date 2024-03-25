@@ -48,6 +48,6 @@ plt.plot(x_fit, func_nlogn(x_fit, *popt_extract_nlogn), 'r-', label='Fit with nl
 plt.plot(x_fit, func_n2(x_fit, *popt_insert_n2), 'b--', label='Fit with n^2: Insert')
 plt.plot(x_fit, func_n2(x_fit, *popt_extract_n2), 'r--', label='Fit with n^2: Extract')
 plt.xlabel('Number of Nodes')
-plt.ylabel('Time (nanoseconds)')
+plt.ylabel('Time (nanosecond)')
 plt.legend()
 plt.show()
