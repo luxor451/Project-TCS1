@@ -1,4 +1,3 @@
-# Written by copilot
 # need a heap_correctness.csv file in the same directory as the toml file
 import csv
 import matplotlib.pyplot as plt
