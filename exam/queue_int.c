@@ -1,5 +1,6 @@
 #include "queue_int.h"
 #include <stdlib.h>
+#include <assert.h>
 
 queue_int nil() {
     queue_int* res = malloc(sizeof(queue_int));
@@ -31,4 +32,15 @@ void enqueue(queue_int *p_queue, int value) {
         p_queue->p_last = new_node;
     }
     
+}
+
+int dequeue(queue_int *p_queue){
+    assert(!is_empty(*p_queue));
+    cell_int* first_node = p_queue->p_first;
+    cell_int* next_node = first_node->p_next;
+    int res = first_node->value;
+    p_queue->p_first = next_node;
+    p_queue->size -= 1;
+    free(first_node);
+    return res;
 }
