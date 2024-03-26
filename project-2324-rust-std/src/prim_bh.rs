@@ -1,30 +1,28 @@
-/*
-use crate::{core::neighors::Neighbors, find_neighbors::find_neighbors, Map, core::binary_heap::{Heap, Node}};
+
+use std::{cell::RefCell, rc::Rc};
+
+use crate::{core::{binary_heap::{Heap, Node, NodeCell}, neighors::Neighbors}, find_neighbors::find_neighbors, Map};
 
 pub fn prim_naive_function(map: &Map) -> (Vec<i32>, i32) {
     // Initialize all the variables
     let maze_size: usize = map.width * map.height;
     let mut predecessor: Vec<i32> = vec![-1; maze_size];
     let mut heap  = Heap::default();
-    let mut been_seen: Vec<bool> = vec![false; maze_size];
+    let mut all_nodes: Vec<Rc<NodeCell<i32>>> = Vec::with_capacity(maze_size);
     for i in 0..maze_size {
-        heap.insert(Node {
+        let node_to_insert = Rc::new(RefCell::new( Node {
             cost: i64::MAX,
             value: i as i32,
             left_child: None,
             right_child: None,
-        });
+        }));
+        let _n = heap.insert(node_to_insert.clone());
+        all_nodes.push(node_to_insert);
     }
     // We chose the node 0;
     let mut v: i32 = 0;
-    been_seen[v as usize] = true;
-    heap.insert(Node {
-        value: v,
-        cost: 0,
-        left_child: None,
-        right_child: None }
-    );
-    while !heap .is_empty() {
+    
+    while !heap.is_empty() {
         // Get the node that minmize cheapest, other implementation in quote below
         v = *capitalize_n
             .iter()
@@ -45,4 +43,3 @@ pub fn prim_naive_function(map: &Map) -> (Vec<i32>, i32) {
     }
     return (predecessor, cheapest.iter().sum());
 }
- */
