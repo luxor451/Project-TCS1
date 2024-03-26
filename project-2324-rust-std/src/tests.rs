@@ -66,7 +66,7 @@ mod test {
     #[test]
     fn test_print_maze() {
         print!("print_maze test on maze_2048 :\n");
-        let maze_array_2048: Vec<i32> = vec![
+        let maze_array_2048: Vec<i64> = vec![
             -1, 0, 3, 13, 14, 4, 7, 17, 18, 19, 11, 1, 22, 12, 13, 14, 15, 18, 28, 29, 10, 20, 21,
             22, 34, 26, 16, 26, 38, 28, 20, 21, 31, 32, 44, 25, 37, 27, 37, 38, 50, 51, 32, 42, 43,
             46, 36, 37, 58, 59, 51, 52, 42, 63, 53, 56, 46, 47, 59, 69, 61, 62, 52, 73, 54, 64, 65,
@@ -84,7 +84,7 @@ mod test {
     #[test]
     fn test_maze_in_pbm() {
         print!("pbm test on maze_2048 :\n");
-        let maze_array_2048: Vec<i32> = vec![
+        let maze_array_2048: Vec<i64> = vec![
             -1, 0, 3, 13, 14, 4, 7, 17, 18, 19, 11, 1, 22, 12, 13, 14, 15, 18, 28, 29, 10, 20, 21,
             22, 34, 26, 16, 26, 38, 28, 20, 21, 31, 32, 44, 25, 37, 27, 37, 38, 50, 51, 32, 42, 43,
             46, 36, 37, 58, 59, 51, 52, 42, 63, 53, 56, 46, 47, 59, 69, 61, 62, 52, 73, 54, 64, 65,
@@ -223,7 +223,7 @@ mod test {
     #[test]
     fn test_heap_correctness() {
         let number_of_nodes = 50;
-        let mut new_heap: Heap<i32> = Heap::default();
+        let mut new_heap: Heap<i64> = Heap::default();
         for i in 0..number_of_nodes {
             let _n = new_heap.insert(Rc::new(RefCell::new(Node {
                 value: i,
@@ -233,7 +233,7 @@ mod test {
             })));
         }
 
-        let mut test_vec: Vec<i32> = Vec::new();
+        let mut test_vec: Vec<i64> = Vec::new();
         // println!("Heap before extraction : \n{:?}", new_heap);
         let min = new_heap.extract_min();
         test_vec.push(min.0.unwrap());
@@ -243,7 +243,7 @@ mod test {
         }
 
         // println!("Heap after extraction : \n{:?}", new_heap);
-        assert!(test_vec == (0..number_of_nodes).collect::<Vec<i32>>());
+        assert!(test_vec == (0..number_of_nodes).collect::<Vec<i64>>());
     }
 
     use std::error::Error;
@@ -253,8 +253,8 @@ mod test {
     fn test_heap_complexity() -> Result<(), Box<dyn Error>> {
         let mut wtr = Writer::from_path("./heap_correctness.csv")?;
         for x in 1..20 {
-            let mut new_heap: Heap<i32> = Heap::default();
-            let number_of_nodes = 20 * (2 as i32).pow(x);
+            let mut new_heap: Heap<i64> = Heap::default();
+            let number_of_nodes = 20 * (2 as i64).pow(x);
             let insert_start = std::time::Instant::now();
             for i in 0..number_of_nodes {
                 let _newnode = new_heap.insert(Rc::new(RefCell::new(Node {
@@ -286,7 +286,7 @@ mod test {
     #[test]
     fn test_change_cost() {
         let number_of_nodes = 20;
-        let mut new_heap: Heap<i32> = Heap::default();
+        let mut new_heap: Heap<i64> = Heap::default();
 
         for i in (0..number_of_nodes).filter(|&x| x != 15) {
             let _n = new_heap.insert(Rc::new(RefCell::new(Node {
@@ -305,7 +305,5 @@ mod test {
         let n = new_heap.insert(the_15_th_node.clone());
         new_heap.change_cost(the_15_th_node, n, -100);
         assert_eq!(new_heap.extract_min().0.unwrap(), 15);
-
-      
     }
 }

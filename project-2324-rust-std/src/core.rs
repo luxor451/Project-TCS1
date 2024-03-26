@@ -5,8 +5,8 @@ pub mod map_load {
     use std::fmt;
 
     pub struct Edges {
-        pub down: i32,
-        pub right: i32,
+        pub down: i64,
+        pub right: i64,
     }
     pub struct Map {
         pub width: usize,
@@ -91,8 +91,8 @@ pub mod neighors {
 
     pub struct Neighbors {
         pub nb: usize,
-        pub neighbors_names: [i32; 4],
-        pub edges_cost: [i32; 4],
+        pub neighbors_names: [i64; 4],
+        pub edges_cost: [i64; 4],
     }
 
     impl Neighbors {
@@ -107,9 +107,9 @@ pub mod neighors {
         // Return the neighbors of the node in position (x, y) in map
         pub fn new_node(map: &Map, x: usize, y: usize) -> Self {
             let mut nb: usize = 0;
-            let mut neighbors_names: [i32; 4] = [-1, -1, -1, -1];
-            let mut edges_cost: [i32; 4] = [0, 0, 0, 0];
-            let curent_node: i32 = (map.width * y + x) as i32;
+            let mut neighbors_names: [i64; 4] = [-1, -1, -1, -1];
+            let mut edges_cost: [i64; 4] = [0, 0, 0, 0];
+            let curent_node: i64 = (map.width * y + x) as i64;
             // Iterate throught each case and if the neighbors exist add it to the arrays;
             if x > 0 {
                 nb = nb + 1;
@@ -123,12 +123,12 @@ pub mod neighors {
             }
             if y > 0 {
                 nb = nb + 1;
-                neighbors_names[2] = curent_node - map.width as i32;
+                neighbors_names[2] = curent_node - map.width as i64;
                 edges_cost[2] = map.edges_matrix.get(x, y - 1).down;
             }
             if y < map.height - 1 {
                 nb = nb + 1;
-                neighbors_names[0] = curent_node + map.width as i32;
+                neighbors_names[0] = curent_node + map.width as i64;
                 edges_cost[0] = map.edges_matrix.get(x, y).down;
             }
 
@@ -183,12 +183,12 @@ pub mod neighors {
             return res;
         }
     }
-    /// Define how to iterate throught Neighbors, every iterable is a tuple (i32, i32) with the name of the neighbor and the associated edge cost
+    /// Define how to iterate throught Neighbors, every iterable is a tuple (i64, i64) with the name of the neighbor and the associated edge cost
     impl IntoIterator for Neighbors {
-        type Item = (i32, i32);
+        type Item = (i64, i64);
         type IntoIter = std::vec::IntoIter<Self::Item>;
         fn into_iter(self) -> Self::IntoIter {
-            let mut vec: Vec<(i32, i32)> = Vec::new();
+            let mut vec: Vec<(i64, i64)> = Vec::new();
             for i in 0..4 {
                 vec.push((self.neighbors_names[i].clone(), self.edges_cost[i]));
             }
@@ -204,8 +204,8 @@ pub mod maze {
     pub struct Maze {
         pub width: usize,
         pub height: usize,
-        pub predecessor: Vec<i32>,
-        pub cost: i32,
+        pub predecessor: Vec<i64>,
+        pub cost: i64,
     }
 
     impl Maze {
@@ -234,9 +234,9 @@ pub mod maze {
                     // The  node itself
                     write!(writer, "0 ")?;
                     // If the next node is the predecessor of the current node or inversly
-                    if (self.predecessor[(y * self.width) + x + 1] == ((y * self.width) + x) as i32)
+                    if (self.predecessor[(y * self.width) + x + 1] == ((y * self.width) + x) as i64)
                         || (self.predecessor[(y * self.width) + x]
-                            == ((y * self.width) + x + 1) as i32)
+                            == ((y * self.width) + x + 1) as i64)
                     {
                         write!(writer, "0 ")?;
                     } else {
@@ -250,9 +250,9 @@ pub mod maze {
                 write!(writer, "1 ")?;
                 for x in 0..self.width {
                     // If the node below is the predecessor of the current node or inversly
-                    if (self.predecessor[(y + 1) * self.width + x] == (y * self.width + x) as i32)
+                    if (self.predecessor[(y + 1) * self.width + x] == (y * self.width + x) as i64)
                         || (self.predecessor[y * self.width + x]
-                            == ((y + 1) * self.width + x) as i32)
+                            == ((y + 1) * self.width + x) as i64)
                     {
                         write!(writer, "0 ")?;
                     } else {
@@ -271,9 +271,9 @@ pub mod maze {
             for x in 0..self.width - 1 {
                 write!(writer, "0 ")?;
                 if (self.predecessor[((self.height - 1) * self.width) + x + 1]
-                    == (((self.height - 1) * self.width) + x) as i32)
+                    == (((self.height - 1) * self.width) + x) as i64)
                     || (self.predecessor[((self.height - 1) * self.width) + x]
-                        == (((self.height - 1) * self.width) + x + 1) as i32)
+                        == (((self.height - 1) * self.width) + x + 1) as i64)
                 {
                     write!(writer, "0 ")?;
                 } else {
@@ -297,9 +297,9 @@ pub mod maze {
                 write!(f, "⬛")?;
                 for x in 0..self.width - 1 {
                     write!(f, "⬜")?;
-                    if (self.predecessor[(y * self.width) + x + 1] == ((y * self.width) + x) as i32)
+                    if (self.predecessor[(y * self.width) + x + 1] == ((y * self.width) + x) as i64)
                         || (self.predecessor[(y * self.width) + x]
-                            == ((y * self.width) + x + 1) as i32)
+                            == ((y * self.width) + x + 1) as i64)
                     {
                         write!(f, "⬜")?;
                     } else {
@@ -310,9 +310,9 @@ pub mod maze {
                 write!(f, "⬜⬛\n⬛")?;
 
                 for x in 0..self.width {
-                    if (self.predecessor[(y + 1) * self.width + x] == (y * self.width + x) as i32)
+                    if (self.predecessor[(y + 1) * self.width + x] == (y * self.width + x) as i64)
                         || (self.predecessor[y * self.width + x]
-                            == ((y + 1) * self.width + x) as i32)
+                            == ((y + 1) * self.width + x) as i64)
                     {
                         write!(f, "⬜")?;
                     } else {
@@ -327,9 +327,9 @@ pub mod maze {
             for x in 0..self.width - 1 {
                 write!(f, "⬜")?;
                 if (self.predecessor[((self.height - 1) * self.width) + x + 1]
-                    == (((self.height - 1) * self.width) + x) as i32)
+                    == (((self.height - 1) * self.width) + x) as i64)
                     || (self.predecessor[((self.height - 1) * self.width) + x]
-                        == (((self.height - 1) * self.width) + x + 1) as i32)
+                        == (((self.height - 1) * self.width) + x + 1) as i64)
                 {
                     write!(f, "⬜")?;
                 } else {
@@ -440,7 +440,7 @@ pub mod binary_heap {
         ) -> usize {
             path.push(new_node.clone());
             let cost = new_node.borrow().cost;
-            
+
             let mut n = self.size;
             // If path.len() <=, that means that the node is the root and thus we don't need to do anything
             if path.len() > 1 {

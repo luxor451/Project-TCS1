@@ -28,13 +28,13 @@ pub fn load_map(filename: String) -> Map {
     let mut edges_matrix: Matrix<Edges> = Matrix::new(vector_temp, width, height);
 
     //actually read the map
-    let mut below: i32 = 0;
-    let mut right: i32 = 0;
+    let mut below: i64 = 0;
+    let mut right: i64 = 0;
     for x in 0..height {
         for y in 0..width {
             line = String::new();
             reader.read_line(&mut line).unwrap();
-            sscanf!(&line, "{i32} {i32}", below, right).unwrap();
+            sscanf!(&line, "{i64} {i64}", below, right).unwrap();
             *edges_matrix.get_mut(x, y) = Edges {
                 down: below,
                 right: right,
