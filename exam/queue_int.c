@@ -30,6 +30,7 @@ void enqueue(queue_int *p_queue, int value) {
     } else {
         p_queue->p_last->p_next = new_node;
         p_queue->p_last = new_node;
+        p_queue->size ++;
     }
     
 }
@@ -43,4 +44,16 @@ int dequeue(queue_int *p_queue){
     p_queue->size -= 1;
     free(first_node);
     return res;
+}
+
+
+queue_int copy(queue_int queue){
+    queue_int res = nil();
+    // iterate through the list
+    for (cell_int* current_node = queue.p_first; current_node != NULL; current_node = current_node->p_next)
+    {
+        enqueue(&res, current_node->value);
+    }
+    return res;
+    
 }
