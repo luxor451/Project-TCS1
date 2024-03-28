@@ -1,8 +1,8 @@
 ## Before all : run the "cargo doc --open" command to generate the documentation and open the index.html file in your browser
 
-# I would recommend looking at the source code in rustdoc because I find that all the exemples for the different function make the code not really readable in VScode.
+I would recommend looking at the source code in rustdoc because I find that all the exemples for the different function make the code not really readable in VScode.
 
-# Finnaly I was not able to compile and test the doctests and thus they may be typo or mistakes in the exemples given 
+Finnaly I was not able to compile and test the doctests and thus they may be typo or mistakes in the exemples given 
 
 This project, since it is in Rust, does not respect completly the struture given in the subject.
 
