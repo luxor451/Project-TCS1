@@ -32,10 +32,10 @@ pub mod maze {
     }
 
     impl Maze {
-        /// Create a pbm file named print_maze.pbm
+        /// Create a pbm file named `filename`
         /// Write in this file the maze.
-        pub fn write_maze_in_pbm(&self) -> std::io::Result<()> {
-            let file = File::create("print_maze.pbm")?;
+        pub fn write_maze_in_pbm(&self, filename: &String) -> std::io::Result<()> {
+            let file = File::create(filename)?;
             // First row of wall
             let mut writer: BufWriter<&File> = BufWriter::new(&file);
             write!(
@@ -203,6 +203,6 @@ mod test_maze {
             predecessor: maze_array_2048,
             cost: -666,
         };
-        let _ = Maze::write_maze_in_pbm(&maze_2048);
+        let _ = Maze::write_maze_in_pbm(&maze_2048, &String::from("print_maze.pbm"));
     }
 }

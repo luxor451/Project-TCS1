@@ -18,3 +18,6 @@ In find_neighors is implemented the find_neighbors function but most of the actu
 
 For the prim_bh function, to change the cost of a node I choose to insert a new node and keep an Vec
 giving if we have already visited the node or not
+
+This project also implement wilson's agorithm and write it's result to the standard output and to the print_maze_wilson.pbm file
+

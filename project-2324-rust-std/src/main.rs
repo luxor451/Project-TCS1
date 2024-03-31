@@ -11,12 +11,14 @@
 //!
 //! For the prim_bh function, to change the cost of a node I choose to insert a new node and keep an Vec
 //! giving if we have already visited the node or not
+//!
+//! This project also implement wilson's agorithm and write it's result to the standard output and to the print_maze_wilson.pbm file
 
 use std::{env, time::Instant};
 
 use crate::{
     map_load::map_load::Map, map_loader::load_map, maze::maze::Maze, prim_bh::prim_bh_funtion,
-    prim_naive::prim_naive_function,
+    prim_naive::prim_naive_function, wilson::wilson_algorithm_with_root,
 };
 mod binary_heap;
 mod find_neighbors;
@@ -26,6 +28,7 @@ mod maze;
 mod neighbors;
 mod prim_bh;
 mod prim_naive;
+mod wilson;
 
 fn main() {
     //read file name from command line
@@ -34,14 +37,15 @@ fn main() {
         println!("Please provide a filename");
     }
     let filename: &String = &args[1];
-
+    // Get the dimentions from the filename
+    let numbers: Vec<&str> = filename.split('_').collect();
     let test_map: Map = load_map(filename.to_string());
+
+    // Prim naive
     let start = Instant::now();
     let prim: (Vec<i64>, i64) = prim_naive_function(&test_map);
     let duration = start.elapsed();
 
-    // Get the dimentions from the filename
-    let numbers: Vec<&str> = filename.split('_').collect();
     let maze_2048: Maze = Maze {
         width: numbers[1].parse::<usize>().ok().unwrap(),
         height: numbers[2].parse::<usize>().ok().unwrap(),
@@ -52,6 +56,7 @@ fn main() {
         "\n{} \n ^^ Maze generated with prim_naive in {:?}",
         maze_2048, duration
     );
+    // prim with binary heap
     let start = Instant::now();
     let prim_bh: (Vec<i64>, i64) = prim_bh_funtion(&test_map);
     let duration = start.elapsed();
@@ -66,5 +71,24 @@ fn main() {
         "\n{} \n ^^ Maze generated with prim_bh in {:?}",
         maze_2048_bh, duration
     );
-    let _ = Maze::write_maze_in_pbm(&maze_2048_bh);
+    let _ = Maze::write_maze_in_pbm(&maze_2048_bh, &String::from("print_maze.pbm"));
+
+    // Wilson's algorithme
+    let start = Instant::now();
+    let wilson: Vec<i64> = wilson_algorithm_with_root(&test_map, 0);
+    let duration = start.elapsed();
+    let numbers: Vec<&str> = filename.split('_').collect();
+    let maze_2048_bh: Maze = Maze {
+        width: numbers[1].parse::<usize>().ok().unwrap(),
+        height: numbers[2].parse::<usize>().ok().unwrap(),
+        predecessor: wilson,
+        // The cost is not computed in the wilson algorithm and is not important
+        // Were are only interested in a spannign tree, not noeed for it to be minimum
+        cost: 0,
+    };
+    println!(
+        "\n{} \n ^^ Maze generated with wilson's algorithm in {:?}",
+        maze_2048_bh, duration
+    );
+    let _ = Maze::write_maze_in_pbm(&maze_2048_bh, &String::from("print_maze_wilson.pbm"));
 }

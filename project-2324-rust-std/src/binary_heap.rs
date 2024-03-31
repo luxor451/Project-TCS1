@@ -55,7 +55,7 @@ pub mod binary_heap {
 
     /// A binary heap data structure.
     ///
-    /// Each heap has a size, a root node, and a vector of positions.
+    /// Each heap has a size and a `Refcell` to a root node.
     ///
     /// # Example
     ///
@@ -77,7 +77,7 @@ pub mod binary_heap {
     ///     root: Some(Rc::clone(&node_cell)),
     /// };
     /// ```
-    /// Now, heap is a Heap that contains one `Node`` with a value of `"value"`, a cost of `42`, and no children.
+    /// Now, heap is a Heap that contains one `Node` with a value of `"value"`, a cost of `42`, and no children.
     #[derive(Debug)]
     pub struct Heap<T> {
         pub size: usize,
