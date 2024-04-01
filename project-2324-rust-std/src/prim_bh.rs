@@ -42,24 +42,23 @@ pub fn prim_bh_funtion(map: &Map) -> (Vec<i64>, i64) {
         // Get the node with the minimun cost in the heap
         v = heap.extract_min().unwrap();
         // If the node has already been seen, we skip to the next iteration
-        if as_been_seen[v as usize] {
-            continue;
-        }
-        as_been_seen[v as usize] = true;
-        let neighbors: Neighbors = find_neighbors(map, v as usize);
-        for (node, edge_cost) in neighbors {
-            if node != -1 {
-                if !as_been_seen[node as usize] && edge_cost < cheapest[node as usize] {
-                    // Even if the node is already in the heap, we need to update it's cost but like said in the subject
-                    // Since the "new" node as a lower cost it will be seen first
-                    heap.insert(Rc::new(RefCell::new(Node {
-                        cost: edge_cost as i64,
-                        value: node,
-                        left_child: None,
-                        right_child: None,
-                    })));
-                    cheapest[node as usize] = edge_cost;
-                    predecessor[node as usize] = v;
+        if !as_been_seen[v as usize] {
+            as_been_seen[v as usize] = true;
+            let neighbors: Neighbors = find_neighbors(map, v as usize);
+            for (node, edge_cost) in neighbors {
+                if node != -1 {
+                    if !as_been_seen[node as usize] && edge_cost < cheapest[node as usize] {
+                        // Even if the node is already in the heap, we need to update it's cost but like said in the subject
+                        // Since the "new" node as a lower cost it will be seen first
+                        heap.insert(Rc::new(RefCell::new(Node {
+                            cost: edge_cost as i64,
+                            value: node,
+                            left_child: None,
+                            right_child: None,
+                        })));
+                        cheapest[node as usize] = edge_cost;
+                        predecessor[node as usize] = v;
+                    }
                 }
             }
         }
@@ -69,7 +68,7 @@ pub fn prim_bh_funtion(map: &Map) -> (Vec<i64>, i64) {
 
 #[cfg(test)]
 mod test_prim_bh {
-    // These are the same tests as the ones in test_prim_naive.rs
+    // These are the same tests as the ones in prim_naive.rs
     use crate::{map_load::map_load::Map, map_loader::load_map, prim_bh::prim_bh_funtion};
 
     #[test]

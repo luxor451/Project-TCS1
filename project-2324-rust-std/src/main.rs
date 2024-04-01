@@ -39,6 +39,8 @@ fn main() {
     let filename: &String = &args[1];
     // Get the dimentions from the filename
     let numbers: Vec<&str> = filename.split('_').collect();
+    let w = numbers[1].parse::<usize>().ok().unwrap();
+    let h = numbers[2].parse::<usize>().ok().unwrap();
     let test_map: Map = load_map(filename.to_string());
 
     // Prim naive
@@ -47,48 +49,62 @@ fn main() {
     let duration = start.elapsed();
 
     let maze_2048: Maze = Maze {
-        width: numbers[1].parse::<usize>().ok().unwrap(),
-        height: numbers[2].parse::<usize>().ok().unwrap(),
+        width: w,
+        height: h,
         predecessor: prim.0,
         cost: prim.1,
     };
-    println!(
-        "\n{} \n ^^ Maze generated with prim_naive in {:?}",
-        maze_2048, duration
-    );
+    if w > 100 || h > 100 {
+        println!("The maze is too big to be displayed in the terminal");
+        println!("^^ Maze generated with prim_naive in {:?}\n", duration);
+    } else {
+        println!(
+            "\n{} \n ^^ Maze generated with prim_naive in {:?}",
+            maze_2048, duration
+        );
+    }
+
     // prim with binary heap
     let start = Instant::now();
     let prim_bh: (Vec<i64>, i64) = prim_bh_funtion(&test_map);
     let duration = start.elapsed();
-    let numbers: Vec<&str> = filename.split('_').collect();
     let maze_2048_bh: Maze = Maze {
-        width: numbers[1].parse::<usize>().ok().unwrap(),
-        height: numbers[2].parse::<usize>().ok().unwrap(),
+        width: w,
+        height: h,
         predecessor: prim_bh.0,
         cost: prim_bh.1,
     };
-    println!(
-        "\n{} \n ^^ Maze generated with prim_bh in {:?}",
-        maze_2048_bh, duration
-    );
+    if w > 100 || h > 100 {
+        println!("The maze is too big to be displayed in the terminal");
+        println!("^^ Maze generated with prim_naive in {:?}\n", duration);
+    } else {
+        println!(
+            "\n{} \n ^^ Maze generated with prim_naive in {:?}",
+            maze_2048_bh, duration
+        );
+    }
     let _ = Maze::write_maze_in_pbm(&maze_2048_bh, &String::from("print_maze.pbm"));
 
     // Wilson's algorithme
     let start = Instant::now();
     let wilson: Vec<i64> = wilson_algorithm_with_root(&test_map, 0);
     let duration = start.elapsed();
-    let numbers: Vec<&str> = filename.split('_').collect();
-    let maze_2048_bh: Maze = Maze {
-        width: numbers[1].parse::<usize>().ok().unwrap(),
-        height: numbers[2].parse::<usize>().ok().unwrap(),
+    let maze_2048_wilson: Maze = Maze {
+        width: w,
+        height: h,
         predecessor: wilson,
         // The cost is not computed in the wilson algorithm and is not important
-        // Were are only interested in a spannign tree, not noeed for it to be minimum
+        // Were are only interested in a spannign tree, no need for it to be minimum
         cost: 0,
     };
-    println!(
-        "\n{} \n ^^ Maze generated with wilson's algorithm in {:?}",
-        maze_2048_bh, duration
-    );
-    let _ = Maze::write_maze_in_pbm(&maze_2048_bh, &String::from("print_maze_wilson.pbm"));
+    if w > 100 || h > 100 {
+        println!("The maze is too big to be displayed in the terminal");
+        println!("^^ Maze generated with prim_naive in {:?}\n", duration);
+    } else {
+        println!(
+            "\n{} \n ^^ Maze generated with prim_naive in {:?}",
+            maze_2048_wilson, duration
+        );
+    }
+    let _ = Maze::write_maze_in_pbm(&maze_2048_wilson, &String::from("print_maze_wilson.pbm"));
 }
