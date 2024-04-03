@@ -31,8 +31,8 @@ If you have the time, I would recommend you to run it on the 100*100 because as 
 The complexity for the functions is $nlog(n)$ because we call $n$ times a function that has a $O(log(i))$ complexity where $i$ is the number of nodes at the current execution and:
 
 $$
- \sum_{i = 0}^{n} log(i) 
- = log(n!)
+ \sum_{i = 0}^{n} ln(i) 
+ = ln(n!)
 $$
 
 <center>Using Stirling's formula:</center>
@@ -44,15 +44,15 @@ $$
 <center>We have:</center>
 
 $$
-log(n!) \approx log(\sqrt{2\pi n} (\frac{n}{e} )^{n})
+ln(n!) \approx ln(\sqrt{2\pi n} (\frac{n}{e} )^{n})
 $$
 $$
-log(n!) \approx nlog(n) + log(\sqrt{2\pi n}{e} ^{-n})
+ln(n!) \approx nln(n) + ln(\sqrt{2\pi n}{e} ^{-n})
 $$
 $$
-log(n!) \approx nlog(n) - n + log(\sqrt{2\pi n})
+ln(n!) \approx nln(n) - n + ln(\sqrt{2\pi n})
 $$
 
 $$
-log(n!) = O(nln(n))
+ln(n!) = O(nln(n))
 $$
