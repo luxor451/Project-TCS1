@@ -28,7 +28,7 @@ The video is created with ffmpeg. You need to make sure you have it installed on
 If you have the time, I would recommend you to run it on the 100*100 because as it's most interesting on bigger mazes it will take some time though (around 15 minutes on my computer). You can obviously run it with the 10*8 maze but I find it less interesting. It will create a temporary folder to act as a buffer during the execution and remove it at the end.
 
 ## Complexity
-The complexity for the functions is $nlog(n)$ because we call $n$ times a function that has a $O(ln(i))$ complexity where $i$ is the number of nodes at the current execution and:
+The complexity for the functions is $nln(n)$ because we call $n$ times a function that has a $O(ln(i))$ complexity where $i$ is the number of nodes at the current execution and:
 
 $$
  \sum_{i = 0}^{n} ln(i) 
