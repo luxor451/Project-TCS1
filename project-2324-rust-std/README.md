@@ -13,7 +13,7 @@ For the tests use `cargo test`. They are located in the different files as priva
 
 To note: the test for `heap_complexity`, given its runtime is ignored by `cargo test`, you can still run it manually with `cargo test heap_complexity -- --ignored`. It is located in the `binary_heap.rs` file.
 
-For the complexity, I created my own Python script that shows that results are $nlog(n)$ and not $n^2$.
+For the complexity, I created my own Python script that shows that results are $nln(n)$ and not $n^2$.
 
 ## Wilson's Algorithm
 This project also implements Wilson's algorithm and writes its result to the standard output and to the `print_maze_wilson.pbm` file.
@@ -28,7 +28,7 @@ The video is created with ffmpeg. You need to make sure you have it installed on
 If you have the time, I would recommend you to run it on the 100*100 because as it's most interesting on bigger mazes it will take some time though (around 15 minutes on my computer). You can obviously run it with the 10*8 maze but I find it less interesting. It will create a temporary folder to act as a buffer during the execution and remove it at the end.
 
 ## Complexity
-The complexity for the functions is $nlog(n)$ because we call $n$ times a function that has a $O(log(i))$ complexity where $i$ is the number of nodes at the current execution and:
+The complexity for the functions is $nlog(n)$ because we call $n$ times a function that has a $O(ln(i))$ complexity where $i$ is the number of nodes at the current execution and:
 
 $$
  \sum_{i = 0}^{n} ln(i) 
