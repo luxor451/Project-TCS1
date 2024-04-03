@@ -1,3 +1,5 @@
+//! This is just a copy of the readme.md file :
+//! 
 //! This project, since it is in Rust, does not respect completly the struture given in the subject
 //! To use prim's algorithme, you should use the main i.e. run 'cargo run --release --bin projet -- filename'
 //! This will display in the terminal the maze generated with prim_naive and prim_bh, the maze should not be too big to fit in the terminal
@@ -6,19 +8,28 @@
 //! For the tests use 'cargo test' they are located in the different files as private modules
 //! To note : the test for heap_complexity, given it's runtime is ignored by 'cargo test', you can
 //! still run it manually with 'cargo test heap_complexity -- --ignored' , it is located in the binary_heap.rs file
-//!
-//! In find_neighors is implemented the find_neighbors function but most of the actual computation is in the module Neighbors
-//!
-//! For the prim_bh function, to change the cost of a node I choose to insert a new node and keep an Vec
-//! giving if we have already visited the node or not
+//! For the complexity I created my own python that show that results are nlog(n) and not n^2
 //!
 //! This project also implement wilson's agorithm and write it's result to the standard output and to the print_maze_wilson.pbm file
+//!
+//! The wilson_algorithm_with_root_with_video function execute the wilson algorithm and create a video of the execution.
+//! The video is in the project folder and is named maze_generation.mp4.
+//!
+//! To use it you can add the 'video' argument to the command line when running the project.
+//! Exemple that you can run in the terminal : 'cargo run --release --bin projet -- ./data/map_10_8_42.txt video'.
+//! 
+//! The video is created with ffmpeg you need to make sure you have it installed on your computer.
+//! (I didn't have to the time to test it on the school computer so I can't guarantee it will work on it)
+//!
+//! If you have the time, i would recommend you to run it on the 100 time 100 because as it's most interesting on bigger mazes 
+//! it will take some time though (around 15 minutes on my computer). You can obviously run it with the 10 time 8 maze but
+//! i find it less interesting.
+//! It will create a temporary folder to act as a buffer during the execution and remove it at the end.
 
 use std::{env, time::Instant};
-
 use crate::{
     map_load::map_load::Map, map_loader::load_map, maze::maze::Maze, prim_bh::prim_bh_funtion,
-    prim_naive::prim_naive_function, wilson::wilson_algorithm_with_root,
+    prim_naive::prim_naive_function, wilson::{wilson_algorithm_with_root, wilson_algorithm_with_root_with_video},
 };
 mod binary_heap;
 mod find_neighbors;
@@ -76,10 +87,10 @@ fn main() {
     };
     if w > 100 || h > 100 {
         println!("The maze is too big to be displayed in the terminal");
-        println!("^^ Maze generated with prim_naive in {:?}\n", duration);
+        println!("^^ Maze generated with prim_bh in {:?}\n", duration);
     } else {
         println!(
-            "\n{} \n ^^ Maze generated with prim_naive in {:?}",
+            "\n{} \n ^^ Maze generated with prim_bh in {:?}",
             maze_2048_bh, duration
         );
     }
@@ -87,7 +98,11 @@ fn main() {
 
     // Wilson's algorithme
     let start = Instant::now();
-    let wilson: Vec<i64> = wilson_algorithm_with_root(&test_map, 0);
+    let wilson: Vec<i64> = if args.get(2).map_or(false, |v| *v == "video") {
+        wilson_algorithm_with_root_with_video(&test_map, 0)
+    } else {
+        wilson_algorithm_with_root(&test_map, 0)
+    };
     let duration = start.elapsed();
     let maze_2048_wilson: Maze = Maze {
         width: w,
@@ -99,10 +114,10 @@ fn main() {
     };
     if w > 100 || h > 100 {
         println!("The maze is too big to be displayed in the terminal");
-        println!("^^ Maze generated with prim_naive in {:?}\n", duration);
+        println!("^^ Maze generated with wilson in {:?}\n", duration);
     } else {
         println!(
-            "\n{} \n ^^ Maze generated with prim_naive in {:?}",
+            "\n{} \n ^^ Maze generated with wilson in {:?}",
             maze_2048_wilson, duration
         );
     }

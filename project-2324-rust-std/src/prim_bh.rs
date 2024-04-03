@@ -1,4 +1,7 @@
 //! Implementation of Prim's algorithm using binary heaps.
+//! 
+//! For the prim_bh function, to change the cost of a node I choose to insert a new node and keep an Vec
+//! giving if we have already visited the node or not
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -94,3 +97,4 @@ mod test_prim_bh {
         assert_eq!(prim_bh_funtion(&map_2024).1, -666);
     }
 }
+

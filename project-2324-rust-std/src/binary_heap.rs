@@ -399,7 +399,7 @@ pub mod binary_heap {
                 }
             }
             self.size -= 1;
-            // Destroy every posible RefMut that are to give complete ownership to heapify_down
+            // Destroy every posible RefMu to give complete ownership to heapify_down
             // This is not idiomatic Rust but it works
             drop(father_of_last_node);
             drop(root);
