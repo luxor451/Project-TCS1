@@ -1,5 +1,0 @@
-use leftist::*;
-
-fn main() {
-    
-}
