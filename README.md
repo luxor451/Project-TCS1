@@ -21,7 +21,7 @@ This project also implements Wilson's algorithm and writes its result to the sta
 ## Video
 The `wilson_algorithm_with_root_with_video` function executes the Wilson algorithm and creates a video of the execution. The video is in the project folder and is named `maze_generation.mp4`.
 
-To use it, you can add the 'video' argument to the command line when running the project. Example that you can run in the terminal: `cargo run --release --bin projet -- ./data/map_10_8_42.txt video`.
+To use it, you can add the 'video' argument to the command line when running the project. Example that you can run in the terminal: `cargo run --release --bin project -- ./data/map_10_8_42.txt video`.
 
 The video is created with ffmpeg. You need to make sure you have it installed on your computer. (I didn't have the time to test it on the school computer so I can't guarantee it will work on it)
 
